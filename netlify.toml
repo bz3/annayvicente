@@ -4,8 +4,9 @@
   # No build step needed for static site
   publish = "."
 
+# Redirects only affect GET requests by default
+# POST requests to / are handled by Netlify Forms automatically
 [[redirects]]
-  # Redirect all routes to index.html for SPA-like behavior
   from = "/*"
   to = "/index.html"
   status = 200

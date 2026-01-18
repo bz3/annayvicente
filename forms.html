@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Forms</title>
+</head>
+<body>
+  <!-- Hidden form for Netlify Forms detection -->
+  <form name="rsvp" netlify netlify-honeypot="bot-field" hidden>
+    <input type="hidden" name="form-name" value="rsvp">
+    <input type="text" name="firstName">
+    <input type="text" name="lastName">
+    <input type="email" name="email">
+    <input type="radio" name="attendance" value="yes">
+    <input type="radio" name="attendance" value="no">
+    <select name="mainCourse">
+      <option value="meat">Carne</option>
+      <option value="fish">Pescado</option>
+    </select>
+    <textarea name="allergies"></textarea>
+    <textarea name="comments"></textarea>
+    <input type="text" name="bot-field">
+  </form>
+</body>
+</html>
