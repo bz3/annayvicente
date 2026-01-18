@@ -391,8 +391,15 @@ async function handleFormSubmit(e) {
   const submitBtn = form.querySelector('.btn-submit');
   const messageEl = document.getElementById('form-message');
   
+  // #region agent log
+  fetch('http://127.0.0.1:7242/ingest/c9243853-011a-4cad-bc57-1fbe71d16b45',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'app.js:387',message:'Form submit handler called',data:{formName:form.name,formAction:form.action,formMethod:form.method,hasNetlifyAttr:form.hasAttribute('data-netlify'),currentUrl:window.location.href},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'E'})}).catch(()=>{});
+  // #endregion
+  
   // Validate form
   if (!validateForm(form)) {
+    // #region agent log
+    fetch('http://127.0.0.1:7242/ingest/c9243853-011a-4cad-bc57-1fbe71d16b45',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'app.js:396',message:'Form validation failed',data:{},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'F'})}).catch(()=>{});
+    // #endregion
     return;
   }
   
@@ -436,15 +443,29 @@ async function handleFormSubmit(e) {
   
   const encodedData = params.toString();
   
+  // #region agent log
+  fetch('http://127.0.0.1:7242/ingest/c9243853-011a-4cad-bc57-1fbe71d16b45',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'app.js:437',message:'Form submission start',data:{url:'/',method:'POST',bodyLength:encodedData.length,formName:formData.get('form-name'),attendance:formData.get('attendance')},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'B'})}).catch(()=>{});
+  // #endregion
+  
   try {
     // Submit to Netlify Forms - use the correct endpoint
-    const response = await fetch('/', {
+    const fetchUrl = window.location.origin + '/';
+    
+    // #region agent log
+    fetch('http://127.0.0.1:7242/ingest/c9243853-011a-4cad-bc57-1fbe71d16b45',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'app.js:442',message:'Fetch URL resolved',data:{originalUrl:'/',resolvedUrl:fetchUrl,currentOrigin:window.location.origin,currentPath:window.location.pathname},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'C'})}).catch(()=>{});
+    // #endregion
+    
+    const response = await fetch(fetchUrl, {
       method: 'POST',
       headers: { 
         'Content-Type': 'application/x-www-form-urlencoded'
       },
       body: encodedData
     });
+    
+    // #region agent log
+    fetch('http://127.0.0.1:7242/ingest/c9243853-011a-4cad-bc57-1fbe71d16b45',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'app.js:451',message:'Fetch response received',data:{status:response.status,statusText:response.statusText,ok:response.ok,headers:Object.fromEntries(response.headers.entries()),url:response.url},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A'})}).catch(()=>{});
+    // #endregion
     
     // Netlify Forms returns 200 on success, even if it's HTML
     if (response.ok) {
@@ -481,6 +502,11 @@ async function handleFormSubmit(e) {
     } else {
       // Get error details
       const responseText = await response.text().catch(() => '');
+      
+      // #region agent log
+      fetch('http://127.0.0.1:7242/ingest/c9243853-011a-4cad-bc57-1fbe71d16b45',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'app.js:482',message:'Response not OK - error details',data:{status:response.status,statusText:response.statusText,responseTextPreview:responseText.substring(0,500),responseTextLength:responseText.length},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A'})}).catch(()=>{});
+      // #endregion
+      
       console.error('Form submission failed:', {
         status: response.status,
         statusText: response.statusText,
@@ -489,6 +515,10 @@ async function handleFormSubmit(e) {
       throw new Error(`Server error: ${response.status} ${response.statusText}`);
     }
   } catch (error) {
+    // #region agent log
+    fetch('http://127.0.0.1:7242/ingest/c9243853-011a-4cad-bc57-1fbe71d16b45',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'app.js:494',message:'Exception caught',data:{errorName:error.name,errorMessage:error.message,errorStack:error.stack,encodedData:encodedData},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D'})}).catch(()=>{});
+    // #endregion
+    
     console.error('Form submission error:', error);
     console.error('Form data that was sent:', encodedData);
     
