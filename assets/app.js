@@ -408,13 +408,11 @@ async function handleFormSubmit(e) {
     messageEl.className = 'form-message';
   }
   
-  // Prepare form data
+  // Prepare form data - get all form fields
   const formData = new FormData(form);
   
   // Ensure form-name is included (required by Netlify)
-  if (!formData.has('form-name')) {
-    formData.append('form-name', 'rsvp');
-  }
+  formData.set('form-name', 'rsvp');
   
   // Clean up conditional fields if attendance is "no"
   const attendance = formData.get('attendance');
@@ -423,65 +421,80 @@ async function handleFormSubmit(e) {
     formData.delete('allergies');
   }
   
-  // Ensure mainCourse has a value if attendance is "yes" (should be validated already)
-  if (attendance === 'yes' && !formData.get('mainCourse')) {
-    formData.set('mainCourse', '');
+  // Build URL-encoded string manually to ensure all fields are included
+  const params = new URLSearchParams();
+  for (const [key, value] of formData.entries()) {
+    if (value !== null && value !== undefined && value !== '') {
+      params.append(key, value);
+    }
   }
   
-  // Convert FormData to URL-encoded string
-  const encodedData = new URLSearchParams(formData).toString();
+  // Ensure form-name is always first
+  if (!params.has('form-name')) {
+    params.set('form-name', 'rsvp');
+  }
+  
+  const encodedData = params.toString();
   
   try {
-    // Submit to Netlify Forms
+    // Submit to Netlify Forms - use the correct endpoint
     const response = await fetch('/', {
       method: 'POST',
       headers: { 
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'Accept': 'text/html'
+        'Content-Type': 'application/x-www-form-urlencoded'
       },
       body: encodedData
     });
     
-    // Netlify Forms returns HTML, check if it contains success indicators
-    const responseText = await response.text();
-    const isSuccess = response.ok && (
-      responseText.includes('Thank you') || 
-      responseText.includes('success') ||
-      response.status === 200
-    );
-    
-    if (isSuccess) {
-      // Success
-      if (messageEl) {
-        messageEl.textContent = content.rsvp?.success?.[currentLang] || '¡Gracias! Hemos recibido tu confirmación.';
-        messageEl.className = 'form-message success';
+    // Netlify Forms returns 200 on success, even if it's HTML
+    if (response.ok) {
+      // Check response - Netlify returns HTML with success message
+      const responseText = await response.text();
+      
+      // Netlify Forms success page contains these indicators
+      const isSuccess = responseText.includes('Thank you') || 
+                       responseText.includes('Gracias') ||
+                       responseText.includes('success') ||
+                       response.status === 200;
+      
+      if (isSuccess || response.status === 200) {
+        // Success
+        if (messageEl) {
+          messageEl.textContent = content.rsvp?.success?.[currentLang] || '¡Gracias! Hemos recibido tu confirmación.';
+          messageEl.className = 'form-message success';
+        }
+        
+        // Reset form
+        form.reset();
+        handleAttendanceChange({ target: { value: 'no' } });
+        
+        // Clear all initialized flags
+        form.querySelectorAll('[data-initialized]').forEach(el => {
+          el.removeAttribute('data-initialized');
+        });
+        
+        // Scroll to message
+        messageEl?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      } else {
+        throw new Error('Unexpected response format');
       }
-      
-      // Reset form
-      form.reset();
-      handleAttendanceChange({ target: { value: 'no' } });
-      
-      // Clear all initialized flags
-      form.querySelectorAll('[data-initialized]').forEach(el => {
-        el.removeAttribute('data-initialized');
-      });
-      
-      // Scroll to message
-      messageEl?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     } else {
-      // Log error details for debugging
+      // Get error details
+      const responseText = await response.text().catch(() => '');
       console.error('Form submission failed:', {
         status: response.status,
         statusText: response.statusText,
-        responsePreview: responseText.substring(0, 200)
+        responsePreview: responseText.substring(0, 500)
       });
-      throw new Error(`Form submission failed: ${response.status} ${response.statusText}`);
+      throw new Error(`Server error: ${response.status} ${response.statusText}`);
     }
   } catch (error) {
     console.error('Form submission error:', error);
+    console.error('Form data that was sent:', encodedData);
+    
     if (messageEl) {
       const errorMsg = content.rsvp?.error?.[currentLang] || 'Hubo un error al enviar. Por favor, inténtalo de nuevo.';
-      messageEl.textContent = errorMsg;
+      messageEl.textContent = errorMsg + ' (Error: ' + error.message + ')';
       messageEl.className = 'form-message error';
     }
   } finally {

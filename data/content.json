@@ -307,6 +307,16 @@
           "es": "Pescado",
           "en": "Fish",
           "hu": "Hal"
+        },
+        "vegan": {
+          "es": "Menú vegano",
+          "en": "Vegan menu",
+          "hu": "Vegán menü"
+        },
+        "kids": {
+          "es": "Menú infantil",
+          "en": "Kids menu",
+          "hu": "Gyerekmenü"
         }
       },
       "allergies": {
