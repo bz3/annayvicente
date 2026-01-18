@@ -1,0 +1,394 @@
+{
+  "meta": {
+    "title": {
+      "es": "Anna & Vicente — 3 de julio de 2026",
+      "en": "Anna & Vicente — July 3, 2026",
+      "hu": "Anna & Vicente — 2026. július 3."
+    },
+    "description": {
+      "es": "Boda de Anna y Vicente en Finca Etxemendi de Araceli",
+      "en": "Anna and Vicente's wedding at Finca Etxemendi de Araceli",
+      "hu": "Anna és Vicente esküvője az Araceli Finca Etxemendiben"
+    },
+    "ogImage": "TODO: añadir URL de imagen Open Graph"
+  },
+  "hero": {
+    "couple": {
+      "es": "Anna & Vicente",
+      "en": "Anna & Vicente",
+      "hu": "Anna & Vicente"
+    },
+    "date": {
+      "es": "3 de julio de 2026",
+      "en": "July 3, 2026",
+      "hu": "2026. július 3."
+    },
+    "time": {
+      "es": "18:00",
+      "en": "6:00 PM",
+      "hu": "18:00"
+    },
+    "venue": {
+      "es": "Finca Etxemendi de Araceli",
+      "en": "Finca Etxemendi de Araceli",
+      "hu": "Finca Etxemendi de Araceli"
+    },
+    "cta": {
+      "es": "Confirmar asistencia",
+      "en": "RSVP",
+      "hu": "Visszaigazolás"
+    }
+  },
+  "countdown": {
+    "targetDateTime": "2026-07-03T18:00:00+02:00",
+    "timezone": "Europe/Madrid",
+    "labels": {
+      "days": {
+        "es": "días",
+        "en": "days",
+        "hu": "nap"
+      },
+      "hours": {
+        "es": "horas",
+        "en": "hours",
+        "hu": "óra"
+      },
+      "minutes": {
+        "es": "minutos",
+        "en": "minutes",
+        "hu": "perc"
+      },
+      "seconds": {
+        "es": "segundos",
+        "en": "seconds",
+        "hu": "másodperc"
+      },
+      "today": {
+        "es": "¡Hoy es el día!",
+        "en": "Today is the day!",
+        "hu": "Ma van a nap!"
+      },
+      "passed": {
+        "es": "El evento ya ha pasado",
+        "en": "The event has passed",
+        "hu": "Az esemény már elmúlt"
+      }
+    }
+  },
+  "sections": {
+    "theDay": {
+      "title": {
+        "es": "El día de la boda",
+        "en": "The wedding day",
+        "hu": "Az esküvő napja"
+      },
+      "timeline": [
+        {
+          "time": "18:00",
+          "event": {
+            "es": "Ceremonia",
+            "en": "Ceremony",
+            "hu": "Szertartás"
+          },
+          "location": {
+            "es": "Jardines de la finca",
+            "en": "Garden grounds",
+            "hu": "A birtok kertje"
+          }
+        },
+        {
+          "time": "19:00",
+          "event": {
+            "es": "Cóctel",
+            "en": "Cocktail",
+            "hu": "Koktél"
+          },
+          "location": {
+            "es": "Terraza principal",
+            "en": "Main terrace",
+            "hu": "Fő terasz"
+          }
+        },
+        {
+          "time": "20:30",
+          "event": {
+            "es": "Cena",
+            "en": "Dinner",
+            "hu": "Vacsora"
+          },
+          "location": {
+            "es": "Salón principal",
+            "en": "Main hall",
+            "hu": "Fő terem"
+          }
+        },
+        {
+          "time": "23:00",
+          "event": {
+            "es": "Fiesta",
+            "en": "Party",
+            "hu": "Buli"
+          },
+          "location": {
+            "es": "Pista de baile",
+            "en": "Dance floor",
+            "hu": "Táncparkett"
+          }
+        }
+      ]
+    },
+    "venue": {
+      "title": {
+        "es": "Lugar",
+        "en": "Venue",
+        "hu": "Helyszín"
+      },
+      "name": {
+        "es": "Finca Etxemendi de Araceli",
+        "en": "Finca Etxemendi de Araceli",
+        "hu": "Finca Etxemendi de Araceli"
+      },
+      "address": {
+        "es": "TODO: completar dirección completa",
+        "en": "TODO: complete full address",
+        "hu": "TODO: teljes cím kitöltése"
+      },
+      "directions": {
+        "es": "TODO: completar indicaciones de cómo llegar",
+        "en": "TODO: complete directions on how to get there",
+        "hu": "TODO: útbaigazítás kitöltése"
+      },
+      "mapUrl": "TODO: añadir URL de Google Maps embebido o coordenadas"
+    },
+    "accommodation": {
+      "title": {
+        "es": "Alojamiento",
+        "en": "Accommodation",
+        "hu": "Szállás"
+      },
+      "recommended": {
+        "es": "Hotel recomendado",
+        "en": "Recommended hotel",
+        "hu": "Ajánlott szálloda"
+      },
+      "hotels": [
+        {
+          "name": {
+            "es": "Hotel Casa Jose Diaz",
+            "en": "Hotel Casa Jose Diaz",
+            "hu": "Hotel Casa Jose Diaz"
+          },
+          "url": "TODO: añadir URL del hotel",
+          "distance": {
+            "es": "TODO: distancia desde la finca",
+            "en": "TODO: distance from venue",
+            "hu": "TODO: távolság a helyszíntől"
+          },
+          "notes": {
+            "es": "",
+            "en": "",
+            "hu": ""
+          }
+        }
+      ]
+    },
+    "transport": {
+      "title": {
+        "es": "Transporte",
+        "en": "Transportation",
+        "hu": "Közlekedés"
+      },
+      "fromMadrid": {
+        "es": "TODO: completar información de transporte desde Madrid",
+        "en": "TODO: complete transportation information from Madrid",
+        "hu": "TODO: közlekedési információk kitöltése Madridból"
+      },
+      "parking": {
+        "es": "TODO: información sobre parking",
+        "en": "TODO: parking information",
+        "hu": "TODO: parkolási információk"
+      },
+      "buses": {
+        "es": "",
+        "en": "",
+        "hu": ""
+      }
+    },
+    "dressCode": {
+      "title": {
+        "es": "Dress code",
+        "en": "Dress code",
+        "hu": "Öltözködési kód"
+      },
+      "description": {
+        "es": "TODO: completar dress code",
+        "en": "TODO: complete dress code",
+        "hu": "TODO: öltözködési kód kitöltése"
+      }
+    }
+  },
+  "rsvp": {
+    "title": {
+      "es": "Confirmar asistencia",
+      "en": "RSVP",
+      "hu": "Visszaigazolás"
+    },
+    "subtitle": {
+      "es": "Por favor, confirma tu asistencia antes del 1 de junio de 2026",
+      "en": "Please confirm your attendance by June 1, 2026",
+      "hu": "Kérjük, erősítse meg jelenlétét 2026. június 1-jéig"
+    },
+    "fields": {
+      "firstName": {
+        "label": {
+          "es": "Nombre",
+          "en": "First name",
+          "hu": "Keresztnév"
+        },
+        "placeholder": {
+          "es": "Tu nombre",
+          "en": "Your first name",
+          "hu": "A keresztneved"
+        }
+      },
+      "lastName": {
+        "label": {
+          "es": "Apellidos",
+          "en": "Last name",
+          "hu": "Vezetéknév"
+        },
+        "placeholder": {
+          "es": "Tus apellidos",
+          "en": "Your last name",
+          "hu": "A vezetékneved"
+        }
+      },
+      "email": {
+        "label": {
+          "es": "Email",
+          "en": "Email",
+          "hu": "Email"
+        },
+        "placeholder": {
+          "es": "tu@email.com",
+          "en": "your@email.com",
+          "hu": "te@email.com"
+        }
+      },
+      "attendance": {
+        "label": {
+          "es": "Asistencia",
+          "en": "Attendance",
+          "hu": "Jelenlét"
+        },
+        "yes": {
+          "es": "Sí, asistiré",
+          "en": "Yes, I will attend",
+          "hu": "Igen, részt veszek"
+        },
+        "no": {
+          "es": "No, no podré asistir",
+          "en": "No, I cannot attend",
+          "hu": "Nem, nem tudok részt venni"
+        }
+      },
+      "mainCourse": {
+        "label": {
+          "es": "Plato principal",
+          "en": "Main course",
+          "hu": "Főétel"
+        },
+        "meat": {
+          "es": "Carne",
+          "en": "Meat",
+          "hu": "Hús"
+        },
+        "fish": {
+          "es": "Pescado",
+          "en": "Fish",
+          "hu": "Hal"
+        }
+      },
+      "allergies": {
+        "label": {
+          "es": "Alergias e intolerancias",
+          "en": "Allergies and intolerances",
+          "hu": "Allergiák és intoleranciák"
+        },
+        "placeholder": {
+          "es": "Ej: sin gluten, lactosa, frutos secos…",
+          "en": "E.g.: gluten-free, lactose, nuts…",
+          "hu": "Pl.: gluténmentes, laktóz, diófélék…"
+        }
+      },
+      "comments": {
+        "label": {
+          "es": "Comentarios",
+          "en": "Comments",
+          "hu": "Megjegyzések"
+        },
+        "placeholder": {
+          "es": "Cualquier otra información que quieras compartir",
+          "en": "Any other information you'd like to share",
+          "hu": "Bármilyen egyéb információ, amit meg szeretnél osztani"
+        }
+      }
+    },
+    "submit": {
+      "es": "Enviar confirmación",
+      "en": "Submit confirmation",
+      "hu": "Visszaigazolás küldése"
+    },
+    "sending": {
+      "es": "Enviando...",
+      "en": "Sending...",
+      "hu": "Küldés..."
+    },
+    "success": {
+      "es": "¡Gracias! Hemos recibido tu confirmación.",
+      "en": "Thank you! We have received your confirmation.",
+      "hu": "Köszönjük! Megkaptuk visszaigazolásodat."
+    },
+    "error": {
+      "es": "Hubo un error al enviar. Por favor, inténtalo de nuevo.",
+      "en": "There was an error sending. Please try again.",
+      "hu": "Hiba történt a küldés során. Kérjük, próbálja újra."
+    },
+    "validation": {
+      "required": {
+        "es": "Este campo es obligatorio",
+        "en": "This field is required",
+        "hu": "Ez a mező kötelező"
+      },
+      "email": {
+        "es": "Por favor, introduce un email válido",
+        "en": "Please enter a valid email",
+        "hu": "Kérjük, adjon meg érvényes email címet"
+      }
+    }
+  },
+  "footer": {
+    "couple": {
+      "es": "Anna & Vicente",
+      "en": "Anna & Vicente",
+      "hu": "Anna & Vicente"
+    },
+    "date": {
+      "es": "3 de julio de 2026",
+      "en": "July 3, 2026",
+      "hu": "2026. július 3."
+    }
+  },
+  "navigation": {
+    "details": {
+      "es": "Detalles",
+      "en": "Details",
+      "hu": "Részletek"
+    },
+    "rsvp": {
+      "es": "RSVP",
+      "en": "RSVP",
+      "hu": "Visszaigazolás"
+    }
+  }
+}

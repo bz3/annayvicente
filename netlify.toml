@@ -1,0 +1,15 @@
+# Netlify configuration
+
+[build]
+  # No build step needed for static site
+  publish = "."
+
+[[redirects]]
+  # Redirect all routes to index.html for SPA-like behavior
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+[build.environment]
+  # Set Node version if needed (optional)
+  NODE_VERSION = "18"

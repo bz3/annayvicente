@@ -1,0 +1,677 @@
+/* ============================================
+   RESET & BASE
+   ============================================ */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  /* Colors */
+  --color-bg: #fafaf8;
+  --color-text: #1a1a1a;
+  --color-text-light: #666;
+  --color-accent: #8b7355;
+  --color-accent-light: #a8927a;
+  --color-border: #e0e0dc;
+  --color-error: #c44;
+  
+  /* Typography */
+  --font-serif: 'Cormorant Garamond', serif;
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  
+  /* Spacing */
+  --spacing-xs: 0.5rem;
+  --spacing-sm: 1rem;
+  --spacing-md: 2rem;
+  --spacing-lg: 4rem;
+  --spacing-xl: 6rem;
+  
+  /* Transitions */
+  --transition-base: 0.2s ease;
+  
+  /* Max width */
+  --max-width: 800px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--color-text);
+  background-color: var(--color-bg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ============================================
+   TYPOGRAPHY
+   ============================================ */
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-serif);
+  font-weight: 400;
+  line-height: 1.2;
+  color: var(--color-text);
+}
+
+h1 {
+  font-size: clamp(2.5rem, 8vw, 4.5rem);
+  letter-spacing: -0.02em;
+}
+
+h2 {
+  font-size: clamp(2rem, 6vw, 3rem);
+  letter-spacing: -0.01em;
+}
+
+h3 {
+  font-size: clamp(1.5rem, 4vw, 2rem);
+}
+
+p {
+  margin-bottom: 1em;
+}
+
+a {
+  color: var(--color-accent);
+  text-decoration: none;
+  transition: color var(--transition-base);
+}
+
+a:hover,
+a:focus {
+  color: var(--color-accent-light);
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+/* ============================================
+   LANGUAGE NAVIGATION
+   ============================================ */
+
+.lang-nav {
+  position: fixed;
+  top: var(--spacing-sm);
+  right: var(--spacing-sm);
+  z-index: 1000;
+  display: flex;
+  gap: 0.25rem;
+  background: rgba(255, 255, 255, 0.95);
+  padding: 0.25rem;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.lang-btn {
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  font-weight: 500;
+  padding: 0.375rem 0.625rem;
+  border: none;
+  background: transparent;
+  color: var(--color-text-light);
+  cursor: pointer;
+  transition: all var(--transition-base);
+  border-radius: 2px;
+}
+
+.lang-btn:hover,
+.lang-btn:focus {
+  background: var(--color-bg);
+  color: var(--color-text);
+  outline: 2px solid var(--color-accent);
+  outline-offset: 1px;
+}
+
+.lang-btn.active {
+  background: var(--color-accent);
+  color: white;
+}
+
+/* ============================================
+   HERO
+   ============================================ */
+
+.hero {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: var(--spacing-lg) var(--spacing-sm) var(--spacing-md);
+  position: relative;
+}
+
+.hero-content {
+  max-width: var(--max-width);
+  width: 100%;
+}
+
+.hero-couple {
+  margin-bottom: var(--spacing-sm);
+  font-weight: 300;
+  letter-spacing: 0.05em;
+}
+
+.hero-date {
+  font-family: var(--font-serif);
+  font-size: clamp(1.25rem, 4vw, 1.75rem);
+  color: var(--color-text-light);
+  margin-bottom: var(--spacing-xs);
+}
+
+.hero-time {
+  font-family: var(--font-sans);
+  font-size: clamp(1rem, 3vw, 1.25rem);
+  font-weight: 300;
+  color: var(--color-text-light);
+  margin-bottom: var(--spacing-md);
+}
+
+.hero-venue {
+  font-family: var(--font-sans);
+  font-size: clamp(0.875rem, 2.5vw, 1rem);
+  font-weight: 300;
+  color: var(--color-text-light);
+  margin-bottom: var(--spacing-lg);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+/* ============================================
+   BUTTONS
+   ============================================ */
+
+.btn {
+  display: inline-block;
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  font-weight: 400;
+  padding: 0.875rem 2rem;
+  border: 1px solid var(--color-accent);
+  background: transparent;
+  color: var(--color-accent);
+  cursor: pointer;
+  transition: all var(--transition-base);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  border-radius: 0;
+}
+
+.btn:hover,
+.btn:focus {
+  background: var(--color-accent);
+  color: white;
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.btn-primary {
+  background: var(--color-accent);
+  color: white;
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+  background: var(--color-accent-light);
+  border-color: var(--color-accent-light);
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ============================================
+   COUNTDOWN
+   ============================================ */
+
+.countdown {
+  padding: var(--spacing-lg) var(--spacing-sm);
+  background: white;
+  border-top: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.countdown-content {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  text-align: center;
+}
+
+.countdown-display {
+  display: flex;
+  justify-content: center;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 1rem 2rem;
+}
+
+.countdown-value {
+  font-family: var(--font-serif);
+  font-size: clamp(2rem, 8vw, 4rem);
+  font-weight: 300;
+  color: var(--color-text);
+  display: block;
+}
+
+.countdown-label {
+  font-family: var(--font-sans);
+  font-size: clamp(0.75rem, 2vw, 0.875rem);
+  font-weight: 300;
+  color: var(--color-text-light);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  display: block;
+  margin-left: 0.5rem;
+}
+
+.countdown-display > * {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+/* ============================================
+   SECTIONS
+   ============================================ */
+
+.section {
+  padding: var(--spacing-xl) var(--spacing-sm);
+}
+
+.container {
+  max-width: var(--max-width);
+  margin: 0 auto;
+}
+
+.section-title {
+  text-align: center;
+  margin-bottom: var(--spacing-lg);
+  font-weight: 300;
+  letter-spacing: 0.05em;
+}
+
+/* ============================================
+   TIMELINE
+   ============================================ */
+
+.timeline {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.timeline-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding-bottom: var(--spacing-md);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.timeline-item:last-child {
+  border-bottom: none;
+}
+
+.timeline-time {
+  font-family: var(--font-serif);
+  font-size: 1.5rem;
+  font-weight: 400;
+  color: var(--color-accent);
+}
+
+.timeline-event {
+  font-family: var(--font-serif);
+  font-size: 1.25rem;
+  font-weight: 400;
+}
+
+.timeline-location {
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  color: var(--color-text-light);
+  font-weight: 300;
+}
+
+/* ============================================
+   VENUE
+   ============================================ */
+
+.venue-content {
+  text-align: center;
+}
+
+.venue-name {
+  margin-bottom: var(--spacing-sm);
+  font-weight: 400;
+}
+
+.venue-address,
+.venue-directions {
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  color: var(--color-text-light);
+  margin-bottom: var(--spacing-sm);
+  line-height: 1.8;
+}
+
+.venue-map {
+  margin-top: var(--spacing-md);
+  width: 100%;
+  height: 300px;
+  border: 1px solid var(--color-border);
+}
+
+.venue-map iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+/* ============================================
+   ACCOMMODATION
+   ============================================ */
+
+.accommodation-content {
+  text-align: center;
+}
+
+.accommodation-recommended {
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  color: var(--color-text-light);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: var(--spacing-md);
+}
+
+.hotels-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.hotel-item {
+  padding: var(--spacing-md);
+  border: 1px solid var(--color-border);
+  text-align: left;
+}
+
+.hotel-name {
+  font-family: var(--font-serif);
+  font-size: 1.25rem;
+  margin-bottom: var(--spacing-xs);
+}
+
+.hotel-name a {
+  color: var(--color-text);
+}
+
+.hotel-name a:hover,
+.hotel-name a:focus {
+  color: var(--color-accent);
+}
+
+.hotel-distance,
+.hotel-notes {
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  color: var(--color-text-light);
+  margin-top: var(--spacing-xs);
+}
+
+/* ============================================
+   TRANSPORT & DRESS CODE
+   ============================================ */
+
+.transport-content,
+.dress-code-description {
+  font-family: var(--font-sans);
+  font-size: 0.9375rem;
+  line-height: 1.8;
+  color: var(--color-text);
+  text-align: center;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* ============================================
+   RSVP FORM
+   ============================================ */
+
+.rsvp-section {
+  background: white;
+  border-top: 1px solid var(--color-border);
+}
+
+.rsvp-subtitle {
+  text-align: center;
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  color: var(--color-text-light);
+  margin-bottom: var(--spacing-lg);
+}
+
+#rsvp-form {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.form-group {
+  margin-bottom: var(--spacing-md);
+}
+
+.form-group label {
+  display: block;
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  font-weight: 400;
+  margin-bottom: 0.5rem;
+  color: var(--color-text);
+}
+
+.form-group fieldset {
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+
+.form-group legend {
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  font-weight: 400;
+  margin-bottom: 0.5rem;
+  color: var(--color-text);
+  padding: 0;
+}
+
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  padding: 0.75rem;
+  border: 1px solid var(--color-border);
+  background: var(--color-bg);
+  color: var(--color-text);
+  transition: border-color var(--transition-base);
+  border-radius: 0;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+  border-color: var(--color-accent);
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.radio-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.radio-label {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  border: 1px solid transparent;
+  transition: all var(--transition-base);
+}
+
+.radio-label:hover {
+  background: var(--color-bg);
+  border-color: var(--color-border);
+}
+
+.radio-label input[type="radio"] {
+  width: auto;
+  margin: 0;
+  cursor: pointer;
+}
+
+.radio-label input[type="radio"]:focus {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.error-message {
+  display: block;
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  color: var(--color-error);
+  margin-top: 0.25rem;
+  min-height: 1.25rem;
+}
+
+.form-group input:invalid:not(:focus):not(:placeholder-shown),
+.form-group select:invalid:not(:focus) {
+  border-color: var(--color-error);
+}
+
+.hidden {
+  position: absolute;
+  left: -9999px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.btn-submit {
+  width: 100%;
+  margin-top: var(--spacing-md);
+}
+
+.form-message {
+  margin-top: var(--spacing-md);
+  padding: var(--spacing-sm);
+  text-align: center;
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  min-height: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.form-message.success {
+  color: var(--color-accent);
+  border: 1px solid var(--color-accent);
+  background: rgba(139, 115, 85, 0.05);
+}
+
+.form-message.error {
+  color: var(--color-error);
+  border: 1px solid var(--color-error);
+  background: rgba(204, 68, 68, 0.05);
+}
+
+/* ============================================
+   FOOTER
+   ============================================ */
+
+.footer {
+  padding: var(--spacing-lg) var(--spacing-sm);
+  text-align: center;
+  border-top: 1px solid var(--color-border);
+  background: white;
+}
+
+.footer-couple {
+  font-family: var(--font-serif);
+  font-size: 1.5rem;
+  font-weight: 300;
+  margin-bottom: var(--spacing-xs);
+  letter-spacing: 0.05em;
+}
+
+.footer-date {
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  color: var(--color-text-light);
+  font-weight: 300;
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+
+@media (min-width: 768px) {
+  .hero {
+    padding: var(--spacing-xl) var(--spacing-sm);
+  }
+  
+  .countdown-display {
+    gap: 2rem 4rem;
+  }
+  
+  .timeline-item {
+    flex-direction: row;
+    align-items: baseline;
+    gap: var(--spacing-md);
+  }
+  
+  .timeline-time {
+    min-width: 80px;
+  }
+  
+  .radio-group {
+    flex-direction: row;
+    gap: var(--spacing-md);
+  }
+  
+  .venue-map {
+    height: 400px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .section {
+    padding: var(--spacing-xl) var(--spacing-md);
+  }
+}
