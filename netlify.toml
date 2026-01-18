@@ -5,14 +5,9 @@
   publish = "."
 
 # Netlify Forms processes POST requests to / automatically
-# Redirect GET requests to index.html for SPA routing
-# POST requests are NOT affected by redirects (Netlify default behavior)
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
-  # This redirect only affects GET requests
-  # POST requests bypass redirects and go directly to Netlify Forms
+# IMPORTANT: We removed the catch-all redirect because it was interfering with Forms
+# For SPA routing, we'll handle it client-side only
+# If you need server-side routing, add specific redirects here (not catch-all)
 
 [build.environment]
   # Set Node version if needed (optional)
