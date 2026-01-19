@@ -384,22 +384,16 @@ function handleAttendanceChange(e) {
   }
 }
 
+// Clean, trustworthy AJAX submission compatible with Netlify Forms
 async function handleFormSubmit(e) {
   e.preventDefault();
   
   const form = e.target;
   const submitBtn = form.querySelector('.btn-submit');
   const messageEl = document.getElementById('form-message');
-  
-  // #region agent log
-  fetch('http://127.0.0.1:7242/ingest/c9243853-011a-4cad-bc57-1fbe71d16b45',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'app.js:387',message:'Form submit handler called',data:{formName:form.name,formAction:form.action,formMethod:form.method,hasNetlifyAttr:form.hasAttribute('data-netlify'),currentUrl:window.location.href},timestamp:Date.now(),sessionId:'debug-session',runId:'run3',hypothesisId:'E'})}).catch(()=>{});
-  // #endregion
-  
+
   // Validate form
   if (!validateForm(form)) {
-    // #region agent log
-    fetch('http://127.0.0.1:7242/ingest/c9243853-011a-4cad-bc57-1fbe71d16b45',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'app.js:396',message:'Form validation failed',data:{},timestamp:Date.now(),sessionId:'debug-session',runId:'run3',hypothesisId:'F'})}).catch(()=>{});
-    // #endregion
     return;
   }
   
@@ -428,6 +422,11 @@ async function handleFormSubmit(e) {
     formData.delete('allergies');
   }
   
+  // Ensure honeypot field exists
+  if (!formData.has('bot-field')) {
+    formData.set('bot-field', '');
+  }
+  
   // Build URL-encoded string manually to ensure all fields are included
   const params = new URLSearchParams();
   for (const [key, value] of formData.entries()) {
@@ -436,57 +435,41 @@ async function handleFormSubmit(e) {
     }
   }
   
-  // Ensure form-name is always first
+  // Ensure form-name is always present
   if (!params.has('form-name')) {
     params.set('form-name', 'rsvp');
   }
   
   const encodedData = params.toString();
   
-  // #region agent log
-  fetch('http://127.0.0.1:7242/ingest/c9243853-011a-4cad-bc57-1fbe71d16b45',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'app.js:437',message:'Form submission start',data:{formAction:form.action,method:'POST',bodyLength:encodedData.length,formName:formData.get('form-name'),attendance:formData.get('attendance')},timestamp:Date.now(),sessionId:'debug-session',runId:'run3',hypothesisId:'B'})}).catch(()=>{});
-  // #endregion
-  
   try {
-    // Submit to Netlify Forms - always use root path without hash
-    // Netlify Forms requires POST to / (root) without any hash or query params
+    // Submit to Netlify Forms at root path
     const fetchUrl = window.location.origin + '/';
-    
-    // #region agent log
-    fetch('http://127.0.0.1:7242/ingest/c9243853-011a-4cad-bc57-1fbe71d16b45',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'app.js:442',message:'Fetch URL resolved',data:{formAction:form.action,resolvedUrl:fetchUrl,currentOrigin:window.location.origin,currentPath:window.location.pathname,currentHash:window.location.hash},timestamp:Date.now(),sessionId:'debug-session',runId:'run3',hypothesisId:'C'})}).catch(()=>{});
-    // #endregion
     
     const response = await fetch(fetchUrl, {
       method: 'POST',
       headers: { 
         'Content-Type': 'application/x-www-form-urlencoded'
       },
-      body: encodedData
+      body: encodedData,
+      // keep same-origin credentials (cookies) if any
+      credentials: 'same-origin'
     });
     
-    // #region agent log
-    fetch('http://127.0.0.1:7242/ingest/c9243853-011a-4cad-bc57-1fbe71d16b45',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'app.js:451',message:'Fetch response received',data:{status:response.status,statusText:response.statusText,ok:response.ok,headers:Object.fromEntries(response.headers.entries()),url:response.url},timestamp:Date.now(),sessionId:'debug-session',runId:'run3',hypothesisId:'A'})}).catch(()=>{});
-    // #endregion
-    
-    // Netlify Forms returns 200 on success, even if it's HTML
+    // Netlify Forms returns 200 on success (HTML page)
     if (response.ok) {
-      // Check response - Netlify returns HTML with success message
       const responseText = await response.text();
-      
-      // Netlify Forms success page contains these indicators
       const isSuccess = responseText.includes('Thank you') || 
                        responseText.includes('Gracias') ||
                        responseText.includes('success') ||
                        response.status === 200;
       
-      if (isSuccess || response.status === 200) {
-        // Success
+      if (isSuccess) {
         if (messageEl) {
           messageEl.textContent = content.rsvp?.success?.[currentLang] || '¡Gracias! Hemos recibido tu confirmación.';
           messageEl.className = 'form-message success';
         }
         
-        // Reset form
         form.reset();
         handleAttendanceChange({ target: { value: 'no' } });
         
@@ -495,31 +478,20 @@ async function handleFormSubmit(e) {
           el.removeAttribute('data-initialized');
         });
         
-        // Scroll to message
         messageEl?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-      } else {
-        throw new Error('Unexpected response format');
+        return;
       }
-    } else {
-      // Get error details
-      const responseText = await response.text().catch(() => '');
-      
-      // #region agent log
-      fetch('http://127.0.0.1:7242/ingest/c9243853-011a-4cad-bc57-1fbe71d16b45',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'app.js:482',message:'Response not OK - error details',data:{status:response.status,statusText:response.statusText,responseTextPreview:responseText.substring(0,500),responseTextLength:responseText.length},timestamp:Date.now(),sessionId:'debug-session',runId:'run3',hypothesisId:'A'})}).catch(()=>{});
-      // #endregion
-      
-      console.error('Form submission failed:', {
-        status: response.status,
-        statusText: response.statusText,
-        responsePreview: responseText.substring(0, 500)
-      });
-      throw new Error(`Server error: ${response.status} ${response.statusText}`);
     }
-  } catch (error) {
-    // #region agent log
-    fetch('http://127.0.0.1:7242/ingest/c9243853-011a-4cad-bc57-1fbe71d16b45',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'app.js:494',message:'Exception caught',data:{errorName:error.name,errorMessage:error.message,errorStack:error.stack,encodedData:encodedData},timestamp:Date.now(),sessionId:'debug-session',runId:'run3',hypothesisId:'D'})}).catch(()=>{});
-    // #endregion
     
+    // If we get here, something unexpected happened
+    const responseText = await response.text().catch(() => '');
+    console.error('Form submission failed:', {
+      status: response.status,
+      statusText: response.statusText,
+      responsePreview: responseText.substring(0, 500)
+    });
+    throw new Error(`Server error: ${response.status} ${response.statusText}`);
+  } catch (error) {
     console.error('Form submission error:', error);
     console.error('Form data that was sent:', encodedData);
     
