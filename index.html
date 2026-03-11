@@ -1,253 +1,310 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Boda de Anna y Vicente en Finca Etxemendi de Araceli">
-  <meta name="theme-color" content="#f5f5f0">
-  
-  <!-- Open Graph -->
-  <meta property="og:title" content="Anna & Vicente — 3 de julio de 2026">
-  <meta property="og:description" content="Boda de Anna y Vicente en Finca Etxemendi de Araceli">
-  <meta property="og:type" content="website">
-  <meta property="og:image" content="">
-  
-  <title>Anna & Vicente — 3 de julio de 2026</title>
-  
-  <link rel="stylesheet" href="/assets/styles.css">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Anna &amp; Vicente — 03.07.2026</title>
+
+  <meta name="description" content="Boda de Anna y Vicente en Finca Etxemendi de Araceli, 3 de julio de 2026." />
+  <meta property="og:title" content="Anna &amp; Vicente — 03.07.2026" />
+  <meta property="og:description" content="Celebra con nosotros el 3 de julio de 2026 en Finca Etxemendi de Araceli." />
+  <meta property="og:type" content="website" />
+  <meta name="theme-color" content="#f8f5f1" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="assets/styles.css" />
 </head>
 <body>
+
   <!-- Language selector -->
-  <nav class="lang-nav" aria-label="Idioma">
-    <button class="lang-btn" data-lang="es" aria-label="Español">ES</button>
+  <nav class="lang-nav" aria-label="Seleccionar idioma">
+    <button class="lang-btn active" data-lang="es" aria-label="Español">ES</button>
     <button class="lang-btn" data-lang="en" aria-label="English">EN</button>
     <button class="lang-btn" data-lang="hu" aria-label="Magyar">HU</button>
   </nav>
 
-  <!-- Hero section -->
-  <section id="hero" class="hero">
-    <div class="hero-content">
-      <h1 class="hero-couple" data-i18n="hero.couple">Anna & Vicente</h1>
-      <p class="hero-date" data-i18n="hero.date">3 de julio de 2026</p>
-      <p class="hero-time" data-i18n="hero.time">18:00</p>
-      <p class="hero-venue" data-i18n="hero.venue">Finca Etxemendi de Araceli</p>
-      <a href="#rsvp" class="btn btn-primary" data-i18n="hero.cta">Confirmar asistencia</a>
-    </div>
-  </section>
+  <!-- ══════════════════════ HERO ══════════════════════ -->
+  <section id="home" class="hero">
+    <div class="hero__inner">
+      <p class="hero__pre" data-i18n="hero.pre">Le mariage de</p>
 
-  <!-- Countdown -->
-  <section id="countdown" class="countdown">
-    <div class="countdown-content">
-      <div class="countdown-display" id="countdown-display" aria-live="polite">
-        <span class="countdown-value" id="days">0</span>
-        <span class="countdown-label" data-i18n="countdown.labels.days">días</span>
-        <span class="countdown-value" id="hours">0</span>
-        <span class="countdown-label" data-i18n="countdown.labels.hours">horas</span>
-        <span class="countdown-value" id="minutes">0</span>
-        <span class="countdown-label" data-i18n="countdown.labels.minutes">minutos</span>
-        <span class="countdown-value" id="seconds">0</span>
-        <span class="countdown-label" data-i18n="countdown.labels.seconds">segundos</span>
+      <h1 class="hero__names" aria-label="Anna y Vicente">
+        <span class="hero__name">Anna</span>
+        <em class="hero__amp">&amp;</em>
+        <span class="hero__name">Vicente</span>
+      </h1>
+
+      <div class="hero__rule" aria-hidden="true"></div>
+
+      <div class="hero__meta">
+        <span data-i18n="hero.dateFormatted">03 · Julio · 2026</span>
+        <span class="hero__dot" aria-hidden="true">·</span>
+        <span data-i18n="hero.time">18:00 h</span>
+        <span class="hero__dot" aria-hidden="true">·</span>
+        <span data-i18n="hero.venue">Finca Etxemendi de Araceli</span>
       </div>
+
+      <a href="#rsvp" class="btn btn--outline-light" data-i18n="hero.cta">Confirmar asistencia</a>
+    </div>
+
+    <div class="hero__scroll" aria-hidden="true">
+      <div class="hero__scroll-line"></div>
     </div>
   </section>
 
-  <!-- The day -->
-  <section id="the-day" class="section">
+  <!-- ══════════════════════ COUNTDOWN ══════════════════════ -->
+  <section id="countdown" class="section countdown">
+    <div class="container container--narrow">
+      <p class="eyebrow" data-i18n="countdown.eyebrow">Cuenta atrás</p>
+      <div class="countdown__grid" id="countdownGrid">
+        <div class="countdown__item">
+          <span class="countdown__num" id="cd-days">—</span>
+          <span class="countdown__label" data-i18n="countdown.days">días</span>
+        </div>
+        <span class="countdown__colon" aria-hidden="true">:</span>
+        <div class="countdown__item">
+          <span class="countdown__num" id="cd-hours">—</span>
+          <span class="countdown__label" data-i18n="countdown.hours">horas</span>
+        </div>
+        <span class="countdown__colon" aria-hidden="true">:</span>
+        <div class="countdown__item">
+          <span class="countdown__num" id="cd-minutes">—</span>
+          <span class="countdown__label" data-i18n="countdown.minutes">minutos</span>
+        </div>
+        <span class="countdown__colon" aria-hidden="true">:</span>
+        <div class="countdown__item">
+          <span class="countdown__num" id="cd-seconds">—</span>
+          <span class="countdown__label" data-i18n="countdown.seconds">segundos</span>
+        </div>
+      </div>
+      <p id="countdownMessage" class="countdown__message" hidden></p>
+    </div>
+  </section>
+
+  <!-- ══════════════════════ SCHEDULE ══════════════════════ -->
+  <section id="schedule" class="section section--dark">
     <div class="container">
-      <h2 class="section-title" data-i18n="sections.theDay.title">El día de la boda</h2>
-      <div class="timeline" id="timeline">
-        <!-- Timeline items will be generated by JS -->
+      <header class="section__header">
+        <p class="eyebrow eyebrow--light" data-i18n="schedule.eyebrow">El gran día</p>
+        <h2 class="heading heading--light" data-i18n="schedule.title">El programa</h2>
+      </header>
+      <div class="timeline" id="timeline" role="list">
+        <!-- Rendered by JS -->
       </div>
     </div>
   </section>
 
-  <!-- Venue -->
+  <!-- ══════════════════════ VENUE ══════════════════════ -->
   <section id="venue" class="section">
     <div class="container">
-      <h2 class="section-title" data-i18n="sections.venue.title">Lugar</h2>
-      <div class="venue-content">
-        <h3 class="venue-name" data-i18n="sections.venue.name">Finca Etxemendi de Araceli</h3>
-        <p class="venue-address" data-i18n="sections.venue.address">TODO: completar dirección completa</p>
-        <p class="venue-directions" data-i18n="sections.venue.directions">TODO: completar indicaciones de cómo llegar</p>
-        <div class="venue-map" id="venue-map">
-          <!-- Map will be embedded here if mapUrl is provided -->
+      <header class="section__header">
+        <p class="eyebrow" data-i18n="venue.eyebrow">Dónde celebramos</p>
+        <h2 class="heading" data-i18n="venue.title">La finca</h2>
+      </header>
+      <div class="venue__layout">
+        <div class="venue__info">
+          <h3 class="venue__name" data-i18n="venue.name">Finca Etxemendi de Araceli</h3>
+          <address class="venue__address" data-i18n="venue.address"></address>
+          <p class="venue__directions body-text" data-i18n="venue.directions"></p>
+          <a class="btn" href="#" target="_blank" rel="noopener" id="venueMapLink" data-i18n="venue.mapBtn">Ver en Google Maps</a>
+        </div>
+        <div class="venue__map" id="venueMap">
+          <div class="venue__map-placeholder">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+              <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+            </svg>
+            <span data-i18n="venue.mapPlaceholder">Mapa próximamente</span>
+          </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Accommodation -->
-  <section id="accommodation" class="section">
+  <!-- ══════════════════════ ACCOMMODATION ══════════════════════ -->
+  <section id="accommodation" class="section section--alt">
     <div class="container">
-      <h2 class="section-title" data-i18n="sections.accommodation.title">Alojamiento</h2>
-      <div class="accommodation-content">
-        <p class="accommodation-recommended" data-i18n="sections.accommodation.recommended">Hotel recomendado</p>
-        <div class="hotels-list" id="hotels-list">
-          <!-- Hotels will be generated by JS -->
-        </div>
+      <header class="section__header">
+        <p class="eyebrow" data-i18n="accommodation.eyebrow">Dónde descansar</p>
+        <h2 class="heading" data-i18n="accommodation.title">Alojamiento</h2>
+      </header>
+      <div class="hotels-grid" id="hotelsGrid">
+        <!-- Rendered by JS -->
       </div>
     </div>
   </section>
 
-  <!-- Transport -->
+  <!-- ══════════════════════ TRANSPORT ══════════════════════ -->
   <section id="transport" class="section">
     <div class="container">
-      <h2 class="section-title" data-i18n="sections.transport.title">Transporte</h2>
-      <div class="transport-content">
-        <p data-i18n="sections.transport.fromMadrid">TODO: completar información de transporte desde Madrid</p>
-        <p data-i18n="sections.transport.parking">TODO: información sobre parking</p>
-        <p data-i18n="sections.transport.buses"></p>
+      <header class="section__header">
+        <p class="eyebrow" data-i18n="transport.eyebrow">Cómo llegar</p>
+        <h2 class="heading" data-i18n="transport.title">Transporte</h2>
+      </header>
+      <div class="transport-grid">
+
+        <div class="transport-card">
+          <div class="transport-card__icon" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M5 17H3a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v9a2 2 0 0 1-2 2h-2"/>
+              <circle cx="7.5" cy="17.5" r="2.5"/>
+              <circle cx="17.5" cy="17.5" r="2.5"/>
+            </svg>
+          </div>
+          <h3 class="transport-card__title" data-i18n="transport.carTitle">Desde Madrid</h3>
+          <p class="transport-card__desc body-text" data-i18n="transport.car"></p>
+        </div>
+
+        <div class="transport-card">
+          <div class="transport-card__icon" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="3" width="20" height="14" rx="2"/>
+              <path d="M8 21h8M12 17v4"/>
+            </svg>
+          </div>
+          <h3 class="transport-card__title" data-i18n="transport.parkingTitle">Aparcamiento</h3>
+          <p class="transport-card__desc body-text" data-i18n="transport.parking"></p>
+        </div>
+
+        <div class="transport-card">
+          <div class="transport-card__icon" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M8 6v6M15 6v6M2 12h19.6M18 18h3s.5-1.7.8-2.8c.1-.4.2-.8.2-1.2 0-.4-.1-.8-.2-1.2l-1.4-5C20.1 6.8 19.1 6 18 6H4a2 2 0 0 0-2 2v10h3"/>
+              <circle cx="7" cy="18" r="2"/>
+              <path d="M9 18h5"/>
+              <circle cx="16" cy="18" r="2"/>
+            </svg>
+          </div>
+          <h3 class="transport-card__title" data-i18n="transport.busTitle">Autobús</h3>
+          <p class="transport-card__desc body-text" data-i18n="transport.bus"></p>
+        </div>
+
       </div>
     </div>
   </section>
 
-  <!-- Dress code -->
-  <section id="dress-code" class="section">
-    <div class="container">
-      <h2 class="section-title" data-i18n="sections.dressCode.title">Dress code</h2>
-      <p class="dress-code-description" data-i18n="sections.dressCode.description">TODO: completar dress code</p>
+  <!-- ══════════════════════ DRESS CODE ══════════════════════ -->
+  <section id="dress-code" class="section section--dark">
+    <div class="container container--narrow" style="text-align:center">
+      <p class="eyebrow eyebrow--light" data-i18n="dressCode.eyebrow">Cómo vestir</p>
+      <h2 class="heading heading--light" data-i18n="dressCode.title">Dress code</h2>
+      <p class="body-text body-text--light" data-i18n="dressCode.desc"></p>
     </div>
   </section>
 
-  <!-- RSVP -->
-  <section id="rsvp" class="section rsvp-section">
-    <div class="container">
-      <h2 class="section-title" data-i18n="rsvp.title">Confirmar asistencia</h2>
-      <p class="rsvp-subtitle" data-i18n="rsvp.subtitle">Por favor, confirma tu asistencia antes del 1 de junio de 2026</p>
-      
-      <form name="rsvp" method="POST" action="/" data-netlify="true" data-netlify-honeypot="bot-field" id="rsvp-form" novalidate>
-        <input type="hidden" name="form-name" value="rsvp">
-        <p class="hidden">
-          <label>Don't fill this out if you're human: <input name="bot-field" /></label>
-        </p>
+  <!-- ══════════════════════ RSVP ══════════════════════ -->
+  <section id="rsvp" class="section rsvp">
+    <div class="container container--narrow">
+      <header class="section__header rsvp__header">
+        <p class="eyebrow" data-i18n="rsvp.eyebrow">Confirma tu asistencia</p>
+        <h2 class="heading" data-i18n="rsvp.title">RSVP</h2>
+        <p class="body-text rsvp__subtitle" data-i18n="rsvp.subtitle">Por favor, confirma tu asistencia antes del 1 de junio de 2026.</p>
+      </header>
 
-        <div class="form-group">
-          <label for="firstName" data-i18n="rsvp.fields.firstName.label">Nombre</label>
-          <input 
-            type="text" 
-            id="firstName" 
-            name="firstName" 
-            required 
-            data-i18n-placeholder="rsvp.fields.firstName.placeholder"
-            placeholder="Tu nombre"
-            aria-required="true"
-          >
-          <span class="error-message" id="firstName-error" role="alert"></span>
+      <form id="rsvpForm" class="rsvp-form" novalidate>
+
+        <div class="form-row form-row--2">
+          <div class="form-group">
+            <label class="form-label" for="firstName" data-i18n="rsvp.firstName">Nombre</label>
+            <input type="text" id="firstName" name="firstName" class="form-input" autocomplete="given-name" required />
+            <span class="form-error" id="firstNameError" role="alert"></span>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="lastName" data-i18n="rsvp.lastName">Apellidos</label>
+            <input type="text" id="lastName" name="lastName" class="form-input" autocomplete="family-name" required />
+            <span class="form-error" id="lastNameError" role="alert"></span>
+          </div>
         </div>
 
         <div class="form-group">
-          <label for="lastName" data-i18n="rsvp.fields.lastName.label">Apellidos</label>
-          <input 
-            type="text" 
-            id="lastName" 
-            name="lastName" 
-            required 
-            data-i18n-placeholder="rsvp.fields.lastName.placeholder"
-            placeholder="Tus apellidos"
-            aria-required="true"
-          >
-          <span class="error-message" id="lastName-error" role="alert"></span>
+          <label class="form-label" for="email" data-i18n="rsvp.email">Correo electrónico</label>
+          <input type="email" id="email" name="email" class="form-input" autocomplete="email" required />
+          <span class="form-error" id="emailError" role="alert"></span>
         </div>
 
         <div class="form-group">
-          <label for="email" data-i18n="rsvp.fields.email.label">Email</label>
-          <input 
-            type="email" 
-            id="email" 
-            name="email" 
-            required 
-            data-i18n-placeholder="rsvp.fields.email.placeholder"
-            placeholder="tu@email.com"
-            aria-required="true"
-          >
-          <span class="error-message" id="email-error" role="alert"></span>
+          <p class="form-label" id="attendanceLabel" data-i18n="rsvp.attendanceLabel">¿Asistirás?</p>
+          <div class="radio-group" role="radiogroup" aria-labelledby="attendanceLabel">
+            <label class="radio-option">
+              <input type="radio" name="attendance" value="yes" />
+              <span class="radio-mark" aria-hidden="true"></span>
+              <span class="radio-text" data-i18n="rsvp.yes">Sí, asistiré</span>
+            </label>
+            <label class="radio-option">
+              <input type="radio" name="attendance" value="no" />
+              <span class="radio-mark" aria-hidden="true"></span>
+              <span class="radio-text" data-i18n="rsvp.no">No podré asistir</span>
+            </label>
+          </div>
+          <span class="form-error" id="attendanceError" role="alert"></span>
         </div>
 
-        <div class="form-group">
-          <fieldset>
-            <legend data-i18n="rsvp.fields.attendance.label">Asistencia</legend>
-            <div class="radio-group">
-              <label class="radio-label">
-                <input 
-                  type="radio" 
-                  name="attendance" 
-                  value="yes" 
-                  id="attendance-yes" 
-                  required
-                  aria-required="true"
-                >
-                <span data-i18n="rsvp.fields.attendance.yes">Sí, asistiré</span>
-              </label>
-              <label class="radio-label">
-                <input 
-                  type="radio" 
-                  name="attendance" 
-                  value="no" 
-                  id="attendance-no" 
-                  required
-                  aria-required="true"
-                >
-                <span data-i18n="rsvp.fields.attendance.no">No, no podré asistir</span>
-              </label>
+        <div id="attendingFields" class="attending-fields" aria-hidden="true">
+          <div class="attending-fields__inner">
+            <div class="form-group">
+              <label class="form-label" for="mainCourse" data-i18n="rsvp.mainCourseLabel">Menú</label>
+              <div class="select-wrap">
+                <select id="mainCourse" name="mainCourse" class="form-select">
+                  <option value="" data-i18n="rsvp.selectMenu">Selecciona tu menú</option>
+                  <option value="meat" data-i18n="rsvp.meat">Carne</option>
+                  <option value="fish" data-i18n="rsvp.fish">Pescado</option>
+                  <option value="vegan" data-i18n="rsvp.vegan">Menú vegano</option>
+                  <option value="kids" data-i18n="rsvp.kids">Menú infantil</option>
+                </select>
+                <span class="select-arrow" aria-hidden="true">
+                  <svg width="11" height="7" viewBox="0 0 12 8" fill="none">
+                    <path d="M1 1L6 7L11 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </span>
+              </div>
+              <span class="form-error" id="mainCourseError" role="alert"></span>
             </div>
-          </fieldset>
-          <span class="error-message" id="attendance-error" role="alert"></span>
-        </div>
 
-        <div class="form-group conditional-group" id="attendance-yes-group" style="display: none;">
-          <label for="mainCourse" data-i18n="rsvp.fields.mainCourse.label">Plato principal</label>
-          <select id="mainCourse" name="mainCourse" aria-required="true">
-            <option value="">—</option>
-            <option value="meat" data-i18n="rsvp.fields.mainCourse.meat">Carne</option>
-            <option value="fish" data-i18n="rsvp.fields.mainCourse.fish">Pescado</option>
-            <option value="vegan" data-i18n="rsvp.fields.mainCourse.vegan">Menú vegano</option>
-            <option value="kids" data-i18n="rsvp.fields.mainCourse.kids">Menú infantil</option>
-          </select>
-          <span class="error-message" id="mainCourse-error" role="alert"></span>
-        </div>
-
-        <div class="form-group conditional-group" id="attendance-yes-group-2" style="display: none;">
-          <label for="allergies" data-i18n="rsvp.fields.allergies.label">Alergias e intolerancias</label>
-          <textarea 
-            id="allergies" 
-            name="allergies" 
-            rows="3"
-            data-i18n-placeholder="rsvp.fields.allergies.placeholder"
-            placeholder="Ej: sin gluten, lactosa, frutos secos…"
-          ></textarea>
+            <div class="form-group">
+              <label class="form-label" for="allergies" data-i18n="rsvp.allergiesLabel">Alergias o intolerancias</label>
+              <textarea id="allergies" name="allergies" class="form-textarea" rows="2"></textarea>
+            </div>
+          </div>
         </div>
 
         <div class="form-group">
-          <label for="comments" data-i18n="rsvp.fields.comments.label">Comentarios</label>
-          <textarea 
-            id="comments" 
-            name="comments" 
-            rows="4"
-            data-i18n-placeholder="rsvp.fields.comments.placeholder"
-            placeholder="Cualquier otra información que quieras compartir"
-          ></textarea>
+          <label class="form-label" for="comments" data-i18n="rsvp.commentsLabel">Comentarios</label>
+          <textarea id="comments" name="comments" class="form-textarea" rows="3"></textarea>
         </div>
 
-        <button type="submit" class="btn btn-primary btn-submit" data-i18n="rsvp.submit">
-          Enviar confirmación
-        </button>
+        <!-- Honeypot (anti-spam) -->
+        <div class="form-hp" aria-hidden="true">
+          <input type="text" name="bot-field" tabindex="-1" autocomplete="off" />
+        </div>
 
-        <div class="form-message" id="form-message" role="alert" aria-live="polite"></div>
+        <div class="form-submit">
+          <button type="submit" id="submitBtn" class="btn btn--gold">
+            <span id="submitText" data-i18n="rsvp.submit">Confirmar asistencia</span>
+          </button>
+        </div>
       </form>
+
+      <div id="formSuccess" class="form-feedback form-feedback--ok" hidden role="status">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+        <p data-i18n="rsvp.success">¡Gracias! Hemos recibido tu confirmación.</p>
+      </div>
+      <div id="formError" class="form-feedback form-feedback--err" hidden role="alert">
+        <p data-i18n="rsvp.error">Ha ocurrido un error. Por favor, inténtalo de nuevo.</p>
+      </div>
+
     </div>
   </section>
 
-  <!-- Footer -->
+  <!-- ══════════════════════ FOOTER ══════════════════════ -->
   <footer class="footer">
     <div class="container">
-      <p class="footer-couple" data-i18n="footer.couple">Anna & Vicente</p>
-      <p class="footer-date" data-i18n="footer.date">3 de julio de 2026</p>
+      <p class="footer__names" data-i18n="footer.couple">Anna &amp; Vicente</p>
+      <p class="footer__date" data-i18n="footer.date">3 de julio de 2026</p>
     </div>
   </footer>
 
-  <script src="/assets/app.js"></script>
+  <script src="assets/app.js"></script>
 </body>
 </html>
