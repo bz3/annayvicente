@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin — Anna &amp; Vicente</title>
+  <meta name="robots" content="noindex,nofollow" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="assets/admin.css" />
+</head>
+<body>
+
+  <!-- ══════════════════════ LOGIN ══════════════════════ -->
+  <div id="loginScreen" class="login-screen">
+    <div class="login-box">
+      <div class="login-brand">
+        <span class="login-brand__monogram">A&V</span>
+        <p class="login-brand__sub">Boda · 03.07.2026</p>
+      </div>
+
+      <h1 class="login-title">Panel de administración</h1>
+
+      <form id="loginForm" class="login-form" novalidate>
+        <div class="login-field">
+          <label for="loginUser">Usuario</label>
+          <input type="text" id="loginUser" name="username" autocomplete="username" required />
+        </div>
+        <div class="login-field">
+          <label for="loginPass">Contraseña</label>
+          <input type="password" id="loginPass" name="password" autocomplete="current-password" required />
+        </div>
+        <p id="loginError" class="login-error" hidden>Credenciales incorrectas. Inténtalo de nuevo.</p>
+        <button type="submit" id="loginBtn" class="a-btn a-btn--primary">Entrar</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ══════════════════════ ADMIN PANEL ══════════════════════ -->
+  <div id="adminPanel" class="admin-panel" hidden>
+
+    <header class="a-header">
+      <div class="a-header__brand">
+        <span class="a-header__monogram">A&V</span>
+        <div>
+          <p class="a-header__title">Panel de administración</p>
+          <p class="a-header__sub">Anna &amp; Vicente · 03.07.2026</p>
+        </div>
+      </div>
+      <div class="a-header__actions">
+        <button id="refreshBtn" class="a-btn a-btn--ghost" title="Actualizar datos">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polyline points="23 4 23 10 17 10"/>
+            <polyline points="1 20 1 14 7 14"/>
+            <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+          </svg>
+          Actualizar
+        </button>
+        <button id="exportBtn" class="a-btn a-btn--ghost">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="7 10 12 15 17 10"/>
+            <line x1="12" y1="15" x2="12" y2="3"/>
+          </svg>
+          Exportar CSV
+        </button>
+        <button id="logoutBtn" class="a-btn a-btn--ghost">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+            <polyline points="16 17 21 12 16 7"/>
+            <line x1="21" y1="12" x2="9" y2="12"/>
+          </svg>
+          Salir
+        </button>
+      </div>
+    </header>
+
+    <main class="a-main">
+
+      <!-- Stats -->
+      <section class="stats-section">
+        <div class="stats-grid">
+          <div class="stat-card">
+            <p class="stat-card__label">Total respuestas</p>
+            <p class="stat-card__value" id="statTotal">—</p>
+          </div>
+          <div class="stat-card stat-card--green">
+            <p class="stat-card__label">Confirman asistencia</p>
+            <p class="stat-card__value" id="statAttending">—</p>
+          </div>
+          <div class="stat-card stat-card--red">
+            <p class="stat-card__label">No asistirán</p>
+            <p class="stat-card__value" id="statNotAttending">—</p>
+          </div>
+          <div class="stat-card stat-card--gold">
+            <p class="stat-card__label">Con alergias / intolerancias</p>
+            <p class="stat-card__value" id="statAllergies">—</p>
+          </div>
+        </div>
+
+        <div id="menuBreakdown" class="menu-breakdown" hidden>
+          <p class="menu-breakdown__title">Distribución de menús</p>
+          <div class="menu-breakdown__bars" id="menuBars"></div>
+        </div>
+      </section>
+
+      <!-- Filters -->
+      <div class="filter-bar">
+        <div class="filter-search-wrap">
+          <svg class="filter-search-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+          <input type="search" id="searchInput" class="filter-search" placeholder="Buscar por nombre o email…" />
+        </div>
+        <div class="filter-tabs" role="tablist">
+          <button class="filter-tab active" data-filter="all" role="tab" aria-selected="true">Todos</button>
+          <button class="filter-tab" data-filter="yes" role="tab" aria-selected="false">Asisten</button>
+          <button class="filter-tab" data-filter="no"  role="tab" aria-selected="false">No asisten</button>
+        </div>
+        <span class="filter-count" id="filterCount"></span>
+      </div>
+
+      <!-- Table -->
+      <div class="table-wrap">
+        <table class="a-table" id="rsvpTable">
+          <thead>
+            <tr>
+              <th>Nombre</th>
+              <th>Email</th>
+              <th>Asistencia</th>
+              <th>Menú</th>
+              <th>Alergias</th>
+              <th>Comentarios</th>
+              <th>Fecha</th>
+              <th class="th-action" aria-label="Acciones"></th>
+            </tr>
+          </thead>
+          <tbody id="rsvpTableBody">
+            <tr>
+              <td colspan="8" class="table-empty">
+                <span class="table-loading">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+                  </svg>
+                  Cargando…
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Empty state -->
+      <div id="emptyState" class="empty-state" hidden>
+        <p class="empty-state__icon">🌸</p>
+        <p class="empty-state__title">Sin resultados</p>
+        <p class="empty-state__desc">No se han encontrado respuestas para los filtros seleccionados.</p>
+      </div>
+
+      <!-- Pagination -->
+      <div class="pagination" id="pagination" hidden>
+        <button class="a-btn a-btn--ghost" id="prevPage">← Anterior</button>
+        <span id="pageInfo" class="page-info"></span>
+        <button class="a-btn a-btn--ghost" id="nextPage">Siguiente →</button>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- Detail drawer -->
+  <div id="detailDrawer" class="detail-drawer" hidden>
+    <div class="detail-drawer__overlay" id="drawerOverlay"></div>
+    <div class="detail-drawer__panel">
+      <div class="detail-drawer__header">
+        <h2 class="detail-drawer__name" id="drawerName"></h2>
+        <button class="detail-drawer__close" id="drawerClose" aria-label="Cerrar">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="detail-drawer__body" id="drawerBody"></div>
+    </div>
+  </div>
+
+  <!-- Delete confirm modal -->
+  <div id="deleteModal" class="modal" hidden role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal__overlay" id="modalOverlay"></div>
+    <div class="modal__box">
+      <p class="modal__title" id="modalTitle">¿Eliminar esta respuesta?</p>
+      <p class="modal__desc">Esta acción no se puede deshacer.</p>
+      <div class="modal__actions">
+        <button id="cancelDelete" class="a-btn a-btn--ghost">Cancelar</button>
+        <button id="confirmDelete" class="a-btn a-btn--danger">Eliminar</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="assets/admin.js"></script>
+</body>
+</html>

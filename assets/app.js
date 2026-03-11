@@ -1,614 +1,402 @@
-// ============================================
-// STATE & INIT
-// ============================================
+/* ═══════════════════════════════════════════════════
+   ANNA & VICENTE — Frontend App
+   ═══════════════════════════════════════════════════ */
+
+'use strict';
+
+// ─── State ────────────────────────────────────────
 
 let content = {};
-let currentLang = 'es';
+let lang    = 'es';
 
-// Initialize app
-document.addEventListener('DOMContentLoaded', () => {
-  init();
-});
+// ─── Init ─────────────────────────────────────────
 
 async function init() {
-  await loadContent();
-  detectLanguage();
-  setupLanguageSwitcher();
-  setupCountdown();
-  setupRSVP();
-  renderDynamicContent();
-  updateContent();
-}
-
-// ============================================
-// CONTENT LOADING
-// ============================================
-
-async function loadContent() {
   try {
-    const response = await fetch('/data/content.json');
-    if (!response.ok) throw new Error('Failed to load content');
-    content = await response.json();
-  } catch (error) {
-    console.error('Error loading content:', error);
-    // Fallback content could go here
+    const res = await fetch('/data/content.json');
+    content = await res.json();
+  } catch {
+    console.warn('Could not load content.json');
+    content = {};
   }
+
+  lang = detectLang();
+  applyContent();
+  setupLangNav();
+  setupCountdown();
+  setupTimeline();
+  setupHotels();
+  setupVenueMap();
+  setupRSVP();
+  setupScrollReveal();
 }
 
-// ============================================
-// LANGUAGE DETECTION & SWITCHING
-// ============================================
+// ─── Language ─────────────────────────────────────
 
-function detectLanguage() {
-  // Check localStorage first
-  const savedLang = localStorage.getItem('wedding-lang');
-  if (savedLang && ['es', 'en', 'hu'].includes(savedLang)) {
-    currentLang = savedLang;
-    return;
-  }
-  
-  // Detect from browser
-  const browserLang = navigator.language || navigator.userLanguage;
-  if (browserLang.startsWith('es')) {
-    currentLang = 'es';
-  } else if (browserLang.startsWith('en')) {
-    currentLang = 'en';
-  } else if (browserLang.startsWith('hu')) {
-    currentLang = 'hu';
-  } else {
-    currentLang = 'es'; // Default
-  }
-  
-  localStorage.setItem('wedding-lang', currentLang);
+function detectLang() {
+  const stored = localStorage.getItem('wedding-lang');
+  if (stored && ['es','en','hu'].includes(stored)) return stored;
+  const browser = (navigator.language || '').slice(0,2).toLowerCase();
+  if (['en','hu'].includes(browser)) return browser;
+  return 'es';
 }
 
-function setupLanguageSwitcher() {
-  const langButtons = document.querySelectorAll('.lang-btn');
-  langButtons.forEach(btn => {
+function t(key) {
+  const keys = key.split('.');
+  let node = content;
+  for (const k of keys) {
+    if (!node || typeof node !== 'object') return key;
+    node = node[k];
+  }
+  if (node && typeof node === 'object' && node[lang] !== undefined) return node[lang];
+  if (node && typeof node === 'object' && node.es !== undefined) return node.es;
+  if (typeof node === 'string') return node;
+  return key;
+}
+
+function applyContent() {
+  document.documentElement.lang = lang;
+
+  // Text content
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const val = t(el.dataset.i18n);
+    if (val !== el.dataset.i18n) el.textContent = val;
+  });
+
+  // Placeholders
+  document.querySelectorAll('[data-i18n-ph]').forEach(el => {
+    const val = t(el.dataset.i18nPh);
+    if (val !== el.dataset.i18nPh) el.placeholder = val;
+  });
+
+  // Set form placeholders manually
+  const phs = [
+    ['firstName',  'rsvp.firstName'],
+    ['lastName',   'rsvp.lastName'],
+    ['email',      'rsvp.email'],
+    ['allergies',  'rsvp.allergiesPlaceholder'],
+    ['comments',   'rsvp.commentsPlaceholder'],
+  ];
+  phs.forEach(([id, key]) => {
+    const el = document.getElementById(id);
+    if (el) el.placeholder = t(key);
+  });
+
+  // Page title
+  const title = t('meta.title');
+  if (title && title !== 'meta.title') document.title = title;
+}
+
+function setupLangNav() {
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    if (btn.dataset.lang === lang) btn.classList.add('active');
+    else btn.classList.remove('active');
+
     btn.addEventListener('click', () => {
-      const lang = btn.dataset.lang;
-      if (lang && ['es', 'en', 'hu'].includes(lang)) {
-        currentLang = lang;
-        localStorage.setItem('wedding-lang', currentLang);
-        updateActiveLanguageButton();
-        updateContent();
-        updateCountdownLabels();
-        updateFormPlaceholders();
-      }
+      lang = btn.dataset.lang;
+      localStorage.setItem('wedding-lang', lang);
+      document.querySelectorAll('.lang-btn').forEach(b =>
+        b.classList.toggle('active', b.dataset.lang === lang)
+      );
+      applyContent();
+      setupTimeline();
+      setupHotels();
     });
   });
-  
-  updateActiveLanguageButton();
 }
 
-function updateActiveLanguageButton() {
-  document.querySelectorAll('.lang-btn').forEach(btn => {
-    btn.classList.toggle('active', btn.dataset.lang === currentLang);
-  });
-}
-
-// ============================================
-// CONTENT UPDATES
-// ============================================
-
-function updateContent() {
-  // Update all elements with data-i18n attribute
-  document.querySelectorAll('[data-i18n]').forEach(el => {
-    const key = el.dataset.i18n;
-    const value = getNestedValue(content, key, currentLang);
-    if (value !== undefined) {
-      if (el.tagName === 'INPUT' && el.type === 'text' || el.tagName === 'INPUT' && el.type === 'email') {
-        // Don't overwrite user input
-        if (!el.value || el.dataset.initialized !== 'true') {
-          el.value = value;
-          el.dataset.initialized = 'true';
-        }
-      } else if (el.tagName === 'TEXTAREA') {
-        if (!el.value || el.dataset.initialized !== 'true') {
-          el.textContent = value;
-          el.dataset.initialized = 'true';
-        }
-      } else {
-        el.textContent = value;
-      }
-    }
-  });
-  
-  // Update meta tags
-  if (content.meta) {
-    document.title = content.meta.title?.[currentLang] || document.title;
-    const metaDesc = document.querySelector('meta[name="description"]');
-    if (metaDesc && content.meta.description?.[currentLang]) {
-      metaDesc.content = content.meta.description[currentLang];
-    }
-  }
-  
-  // Update form placeholders
-  updateFormPlaceholders();
-}
-
-function updateFormPlaceholders() {
-  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
-    const key = el.dataset.i18nPlaceholder;
-    const value = getNestedValue(content, key, currentLang);
-    if (value !== undefined) {
-      el.placeholder = value;
-    }
-  });
-  
-  // Update select options
-  document.querySelectorAll('select option[data-i18n]').forEach(option => {
-    const key = option.dataset.i18n;
-    const value = getNestedValue(content, key, currentLang);
-    if (value !== undefined) {
-      option.textContent = value;
-    }
-  });
-}
-
-function getNestedValue(obj, path, lang) {
-  const keys = path.split('.');
-  let value = obj;
-  
-  for (const key of keys) {
-    if (value && typeof value === 'object') {
-      value = value[key];
-    } else {
-      return undefined;
-    }
-  }
-  
-  if (value && typeof value === 'object' && lang in value) {
-    return value[lang];
-  }
-  
-  return value;
-}
-
-// ============================================
-// DYNAMIC CONTENT RENDERING
-// ============================================
-
-function renderDynamicContent() {
-  renderTimeline();
-  renderHotels();
-  renderMap();
-}
-
-function renderTimeline() {
-  const timeline = document.getElementById('timeline');
-  if (!timeline || !content.sections?.theDay?.timeline) return;
-  
-  timeline.innerHTML = '';
-  
-  content.sections.theDay.timeline.forEach((item, index) => {
-    const div = document.createElement('div');
-    div.className = 'timeline-item';
-    
-    const time = document.createElement('div');
-    time.className = 'timeline-time';
-    time.textContent = item.time;
-    
-    const event = document.createElement('div');
-    event.className = 'timeline-event';
-    event.setAttribute('data-i18n', `sections.theDay.timeline.${index}.event`);
-    
-    const location = document.createElement('div');
-    location.className = 'timeline-location';
-    location.setAttribute('data-i18n', `sections.theDay.timeline.${index}.location`);
-    
-    div.appendChild(time);
-    div.appendChild(event);
-    div.appendChild(location);
-    timeline.appendChild(div);
-  });
-  
-  updateContent(); // Re-update to translate new elements
-}
-
-function renderHotels() {
-  const hotelsList = document.getElementById('hotels-list');
-  if (!hotelsList || !content.sections?.accommodation?.hotels) return;
-  
-  hotelsList.innerHTML = '';
-  
-  content.sections.accommodation.hotels.forEach((hotel, index) => {
-    const div = document.createElement('div');
-    div.className = 'hotel-item';
-    
-    const name = document.createElement('h3');
-    name.className = 'hotel-name';
-    
-    if (hotel.url && hotel.url !== 'TODO: añadir URL del hotel') {
-      const link = document.createElement('a');
-      link.href = hotel.url;
-      link.target = '_blank';
-      link.rel = 'noopener noreferrer';
-      link.setAttribute('data-i18n', `sections.accommodation.hotels.${index}.name`);
-      name.appendChild(link);
-    } else {
-      name.setAttribute('data-i18n', `sections.accommodation.hotels.${index}.name`);
-    }
-    
-    const distance = document.createElement('p');
-    distance.className = 'hotel-distance';
-    distance.setAttribute('data-i18n', `sections.accommodation.hotels.${index}.distance`);
-    
-    const notes = document.createElement('p');
-    notes.className = 'hotel-notes';
-    notes.setAttribute('data-i18n', `sections.accommodation.hotels.${index}.notes`);
-    
-    div.appendChild(name);
-    if (hotel.distance && hotel.distance !== `TODO: distancia desde la finca`) {
-      div.appendChild(distance);
-    }
-    if (hotel.notes && hotel.notes[currentLang]) {
-      div.appendChild(notes);
-    }
-    
-    hotelsList.appendChild(div);
-  });
-  
-  updateContent(); // Re-update to translate new elements
-}
-
-function renderMap() {
-  const mapContainer = document.getElementById('venue-map');
-  if (!mapContainer || !content.sections?.venue?.mapUrl) return;
-  
-  const mapUrl = content.sections.venue.mapUrl;
-  if (mapUrl && mapUrl !== 'TODO: añadir URL de Google Maps embebido o coordenadas') {
-    const iframe = document.createElement('iframe');
-    iframe.src = mapUrl;
-    iframe.allowFullscreen = true;
-    iframe.loading = 'lazy';
-    iframe.title = content.sections.venue.name?.[currentLang] || 'Mapa';
-    mapContainer.appendChild(iframe);
-  }
-}
-
-// ============================================
-// COUNTDOWN
-// ============================================
-
-let countdownInterval = null;
+// ─── Countdown ────────────────────────────────────
 
 function setupCountdown() {
-  if (!content.countdown?.targetDateTime) return;
-  
-  const targetDate = new Date(content.countdown.targetDateTime);
-  updateCountdown(targetDate);
-  
-  countdownInterval = setInterval(() => {
-    updateCountdown(targetDate);
-  }, 1000);
+  const targetStr = content?.countdown?.targetDateTime || '2026-07-03T18:00:00+02:00';
+  const target    = new Date(targetStr).getTime();
+
+  const elDays  = document.getElementById('cd-days');
+  const elHours = document.getElementById('cd-hours');
+  const elMins  = document.getElementById('cd-minutes');
+  const elSecs  = document.getElementById('cd-seconds');
+  const elMsg   = document.getElementById('countdownMessage');
+  const elGrid  = document.getElementById('countdownGrid');
+
+  function pad(n) { return String(Math.max(0, n)).padStart(2, '0'); }
+
+  function tick() {
+    const now  = Date.now();
+    const diff = target - now;
+
+    if (diff <= 0) {
+      if (elGrid) elGrid.hidden = true;
+      if (elMsg) {
+        elMsg.hidden = false;
+        elMsg.textContent = diff === 0 ? t('countdown.today') : t('countdown.passed');
+      }
+      return;
+    }
+
+    const days  = Math.floor(diff / 86400000);
+    const hours = Math.floor((diff % 86400000) / 3600000);
+    const mins  = Math.floor((diff % 3600000) / 60000);
+    const secs  = Math.floor((diff % 60000) / 1000);
+
+    if (elDays)  elDays.textContent  = String(days).padStart(3, '0');
+    if (elHours) elHours.textContent = pad(hours);
+    if (elMins)  elMins.textContent  = pad(mins);
+    if (elSecs)  elSecs.textContent  = pad(secs);
+  }
+
+  tick();
+  setInterval(tick, 1000);
 }
 
-function updateCountdown(targetDate) {
-  const now = new Date();
-  const diff = targetDate - now;
-  
-  const daysEl = document.getElementById('days');
-  const hoursEl = document.getElementById('hours');
-  const minutesEl = document.getElementById('minutes');
-  const secondsEl = document.getElementById('seconds');
-  const displayEl = document.getElementById('countdown-display');
-  
-  if (!displayEl) return;
-  
-  if (diff <= 0) {
-    // Event has passed or is today
-    const isToday = targetDate.toDateString() === now.toDateString();
-    const message = isToday 
-      ? content.countdown?.labels?.today?.[currentLang] || '¡Hoy es el día!'
-      : content.countdown?.labels?.passed?.[currentLang] || 'El evento ya ha pasado';
-    
-    displayEl.innerHTML = `<p style="font-family: var(--font-serif); font-size: 1.5rem;">${message}</p>`;
-    
-    if (countdownInterval) {
-      clearInterval(countdownInterval);
-    }
+// ─── Timeline ─────────────────────────────────────
+
+function setupTimeline() {
+  const container = document.getElementById('timeline');
+  if (!container) return;
+
+  const events = content?.schedule?.events || [];
+
+  container.innerHTML = events.map((ev, i) => `
+    <div class="timeline__item reveal" role="listitem">
+      <div class="timeline__time">${ev.time}</div>
+      <div class="timeline__connector">
+        <div class="timeline__dot"></div>
+        ${i < events.length - 1 ? '<div class="timeline__vline"></div>' : ''}
+      </div>
+      <div class="timeline__body">
+        <p class="timeline__event">${ev.event?.[lang] || ev.event?.es || ''}</p>
+        <p class="timeline__loc">${ev.location?.[lang] || ev.location?.es || ''}</p>
+      </div>
+    </div>
+  `).join('');
+
+  setupScrollReveal();
+}
+
+// ─── Hotels ───────────────────────────────────────
+
+function setupHotels() {
+  const container = document.getElementById('hotelsGrid');
+  if (!container) return;
+
+  const hotels = content?.accommodation?.hotels || [];
+  if (!hotels.length) {
+    container.innerHTML = '<p class="body-text">Información de alojamiento próximamente.</p>';
     return;
   }
-  
-  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-  const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-  const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-  const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-  
-  if (daysEl) daysEl.textContent = String(days).padStart(2, '0');
-  if (hoursEl) hoursEl.textContent = String(hours).padStart(2, '0');
-  if (minutesEl) minutesEl.textContent = String(minutes).padStart(2, '0');
-  if (secondsEl) secondsEl.textContent = String(seconds).padStart(2, '0');
+
+  container.innerHTML = hotels.map(h => {
+    const name     = h.name?.[lang]     || h.name?.es     || '';
+    const distance = h.distance?.[lang] || h.distance?.es || '';
+    const note     = h.note?.[lang]     || h.note?.es     || '';
+    const url      = h.url;
+
+    return `
+      <div class="hotel-card reveal">
+        <p class="hotel-card__name">${name}</p>
+        ${distance ? `<p class="hotel-card__distance">${distance}</p>` : ''}
+        ${note ? `<p class="hotel-card__note">${note}</p>` : ''}
+        ${url ? `<a class="hotel-card__link" href="${url}" target="_blank" rel="noopener">Reservar</a>` : ''}
+      </div>
+    `;
+  }).join('');
+
+  setupScrollReveal();
 }
 
-function updateCountdownLabels() {
-  const labels = document.querySelectorAll('.countdown-label');
-  labels.forEach((label, index) => {
-    const keys = ['days', 'hours', 'minutes', 'seconds'];
-    if (keys[index] && content.countdown?.labels?.[keys[index]]) {
-      label.textContent = content.countdown.labels[keys[index]][currentLang];
+// ─── Venue map ────────────────────────────────────
+
+function setupVenueMap() {
+  const mapUrl = content?.venue?.mapUrl;
+  const mapEl  = document.getElementById('venueMap');
+  const mapBtn = document.getElementById('venueMapLink');
+
+  if (!mapEl) return;
+
+  if (mapUrl && mapUrl !== 'null' && mapUrl !== null) {
+    // Embed iframe if it's an embed URL, else show link
+    if (mapUrl.includes('maps/embed') || mapUrl.includes('embed?')) {
+      mapEl.innerHTML = `<iframe src="${mapUrl}" allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>`;
     }
-  });
+    if (mapBtn) mapBtn.href = mapUrl.replace('/embed', '').replace('output=embed&', '');
+  }
 }
 
-// ============================================
-// RSVP FORM
-// ============================================
+// ─── RSVP Form ────────────────────────────────────
 
 function setupRSVP() {
-  const form = document.getElementById('rsvp-form');
+  const form          = document.getElementById('rsvpForm');
+  const attendingBox  = document.getElementById('attendingFields');
+  const submitBtn     = document.getElementById('submitBtn');
+  const submitText    = document.getElementById('submitText');
+  const successEl     = document.getElementById('formSuccess');
+  const errorEl       = document.getElementById('formError');
+
   if (!form) return;
-  
-  // Handle attendance radio buttons
-  const attendanceRadios = document.querySelectorAll('input[name="attendance"]');
-  attendanceRadios.forEach(radio => {
-    radio.addEventListener('change', handleAttendanceChange);
-  });
-  
-  // Form submission
-  form.addEventListener('submit', handleFormSubmit);
-  
-  // Real-time validation
-  const requiredFields = form.querySelectorAll('[required]');
-  requiredFields.forEach(field => {
-    field.addEventListener('blur', validateField);
-    field.addEventListener('input', clearFieldError);
-  });
-  
-  // Email validation
-  const emailField = document.getElementById('email');
-  if (emailField) {
-    emailField.addEventListener('blur', validateEmail);
-  }
-}
 
-function handleAttendanceChange(e) {
-  const attendanceYesGroup = document.getElementById('attendance-yes-group');
-  const attendanceYesGroup2 = document.getElementById('attendance-yes-group-2');
-  const mainCourseField = document.getElementById('mainCourse');
-  
-  if (e.target.value === 'yes') {
-    if (attendanceYesGroup) attendanceYesGroup.style.display = 'block';
-    if (attendanceYesGroup2) attendanceYesGroup2.style.display = 'block';
-    if (mainCourseField) mainCourseField.setAttribute('required', 'required');
-  } else {
-    if (attendanceYesGroup) attendanceYesGroup.style.display = 'none';
-    if (attendanceYesGroup2) attendanceYesGroup2.style.display = 'none';
-    if (mainCourseField) {
-      mainCourseField.removeAttribute('required');
-      mainCourseField.value = '';
+  // Attendance radios → show/hide extra fields
+  form.querySelectorAll('input[name="attendance"]').forEach(radio => {
+    radio.addEventListener('change', () => {
+      const yes = radio.value === 'yes' && radio.checked;
+      if (attendingBox) {
+        attendingBox.classList.toggle('open', yes);
+        attendingBox.setAttribute('aria-hidden', String(!yes));
+      }
+      if (!yes) {
+        const mc = document.getElementById('mainCourse');
+        if (mc) mc.value = '';
+        const al = document.getElementById('allergies');
+        if (al) al.value = '';
+      }
+      clearError('attendance');
+    });
+  });
+
+  // Live validation on blur
+  ['firstName','lastName','email'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('blur', () => validateField(id));
+  });
+
+  // Form submit
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    if (!validateAll()) return;
+
+    // Honeypot check
+    const botField = form.querySelector('input[name="bot-field"]');
+    if (botField?.value) return;
+
+    submitBtn.disabled = true;
+    submitText.textContent = t('rsvp.sending');
+    if (successEl) successEl.hidden = true;
+    if (errorEl)   errorEl.hidden   = true;
+
+    const data = {
+      firstName:  form.firstName.value.trim(),
+      lastName:   form.lastName.value.trim(),
+      email:      form.email.value.trim(),
+      attendance: form.attendance.value,
+      mainCourse: form.mainCourse?.value || '',
+      allergies:  form.allergies?.value?.trim() || '',
+      comments:   form.comments?.value?.trim()  || '',
+    };
+
+    try {
+      const res = await fetch('/api/rsvp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+
+      const json = await res.json();
+
+      if (res.ok && json.success) {
+        form.hidden = true;
+        if (successEl) {
+          const p = successEl.querySelector('p');
+          if (p) p.textContent = json.updated ? t('rsvp.alreadySent') : t('rsvp.success');
+          successEl.hidden = false;
+          successEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+      } else {
+        throw new Error(json.error || 'Error');
+      }
+    } catch (err) {
+      console.error('Submit error:', err);
+      if (errorEl) {
+        const p = errorEl.querySelector('p');
+        if (p) p.textContent = err.message || t('rsvp.error');
+        errorEl.hidden = false;
+      }
+      submitBtn.disabled = false;
+      submitText.textContent = t('rsvp.submit');
     }
-    const allergiesField = document.getElementById('allergies');
-    if (allergiesField) allergiesField.value = '';
-  }
+  });
 }
 
-async function handleFormSubmit(e) {
-  e.preventDefault();
-  
-  const form = e.target;
-  const submitBtn = form.querySelector('.btn-submit');
-  const messageEl = document.getElementById('form-message');
-  
-  // #region agent log
-  fetch('http://127.0.0.1:7242/ingest/c9243853-011a-4cad-bc57-1fbe71d16b45',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'app.js:387',message:'Form submit handler called',data:{formName:form.name,formAction:form.action,formMethod:form.method,hasNetlifyAttr:form.hasAttribute('data-netlify'),currentUrl:window.location.href},timestamp:Date.now(),sessionId:'debug-session',runId:'run3',hypothesisId:'E'})}).catch(()=>{});
-  // #endregion
-  
-  // Validate form
-  if (!validateForm(form)) {
-    // #region agent log
-    fetch('http://127.0.0.1:7242/ingest/c9243853-011a-4cad-bc57-1fbe71d16b45',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'app.js:396',message:'Form validation failed',data:{},timestamp:Date.now(),sessionId:'debug-session',runId:'run3',hypothesisId:'F'})}).catch(()=>{});
-    // #endregion
+function validateField(id) {
+  const el   = document.getElementById(id);
+  const errEl = document.getElementById(id + 'Error');
+  if (!el || !errEl) return true;
+
+  let msg = '';
+
+  if (!el.value.trim()) {
+    msg = t('rsvp.validation.required');
+  } else if (id === 'email') {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!re.test(el.value.trim())) msg = t('rsvp.validation.email');
+  }
+
+  errEl.textContent = msg;
+  el.classList.toggle('error', !!msg);
+  return !msg;
+}
+
+function clearError(name) {
+  const errEl = document.getElementById(name + 'Error');
+  if (errEl) errEl.textContent = '';
+}
+
+function validateAll() {
+  let ok = true;
+  ok = validateField('firstName') && ok;
+  ok = validateField('lastName')  && ok;
+  ok = validateField('email')     && ok;
+
+  // Attendance
+  const form = document.getElementById('rsvpForm');
+  const att  = form?.attendance?.value;
+  const attErr = document.getElementById('attendanceError');
+  if (!att) {
+    if (attErr) attErr.textContent = t('rsvp.validation.attendance');
+    ok = false;
+  } else {
+    if (attErr) attErr.textContent = '';
+  }
+
+  // Menu (if attending)
+  if (att === 'yes') {
+    const mc = document.getElementById('mainCourse');
+    const mcErr = document.getElementById('mainCourseError');
+    if (mc && !mc.value) {
+      if (mcErr) mcErr.textContent = t('rsvp.validation.required');
+      mc.classList.add('error');
+      ok = false;
+    } else {
+      if (mcErr) mcErr.textContent = '';
+      if (mc) mc.classList.remove('error');
+    }
+  }
+
+  return ok;
+}
+
+// ─── Scroll reveal ────────────────────────────────
+
+function setupScrollReveal() {
+  if (!('IntersectionObserver' in window)) {
+    document.querySelectorAll('.reveal').forEach(el => el.classList.add('visible'));
     return;
   }
-  
-  // Disable submit button
-  if (submitBtn) {
-    submitBtn.disabled = true;
-    submitBtn.textContent = content.rsvp?.sending?.[currentLang] || 'Enviando...';
-  }
-  
-  // Clear previous messages
-  if (messageEl) {
-    messageEl.textContent = '';
-    messageEl.className = 'form-message';
-  }
-  
-  // Prepare form data - get all form fields
-  const formData = new FormData(form);
-  
-  // Ensure form-name is included (required by Netlify)
-  formData.set('form-name', 'rsvp');
-  
-  // Clean up conditional fields if attendance is "no"
-  const attendance = formData.get('attendance');
-  if (attendance === 'no') {
-    formData.delete('mainCourse');
-    formData.delete('allergies');
-  }
-  
-  // Build URL-encoded string manually to ensure all fields are included
-  const params = new URLSearchParams();
-  for (const [key, value] of formData.entries()) {
-    if (value !== null && value !== undefined && value !== '') {
-      params.append(key, value);
-    }
-  }
-  
-  // Ensure form-name is always first
-  if (!params.has('form-name')) {
-    params.set('form-name', 'rsvp');
-  }
-  
-  const encodedData = params.toString();
-  
-  // #region agent log
-  fetch('http://127.0.0.1:7242/ingest/c9243853-011a-4cad-bc57-1fbe71d16b45',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'app.js:437',message:'Form submission start',data:{formAction:form.action,method:'POST',bodyLength:encodedData.length,formName:formData.get('form-name'),attendance:formData.get('attendance')},timestamp:Date.now(),sessionId:'debug-session',runId:'run3',hypothesisId:'B'})}).catch(()=>{});
-  // #endregion
-  
-  try {
-    // Submit to Netlify Forms - always use root path without hash
-    // Netlify Forms requires POST to / (root) without any hash or query params
-    const fetchUrl = window.location.origin + '/';
-    
-    // #region agent log
-    fetch('http://127.0.0.1:7242/ingest/c9243853-011a-4cad-bc57-1fbe71d16b45',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'app.js:442',message:'Fetch URL resolved',data:{formAction:form.action,resolvedUrl:fetchUrl,currentOrigin:window.location.origin,currentPath:window.location.pathname,currentHash:window.location.hash},timestamp:Date.now(),sessionId:'debug-session',runId:'run3',hypothesisId:'C'})}).catch(()=>{});
-    // #endregion
-    
-    const response = await fetch(fetchUrl, {
-      method: 'POST',
-      headers: { 
-        'Content-Type': 'application/x-www-form-urlencoded'
-      },
-      body: encodedData
-    });
-    
-    // #region agent log
-    fetch('http://127.0.0.1:7242/ingest/c9243853-011a-4cad-bc57-1fbe71d16b45',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'app.js:451',message:'Fetch response received',data:{status:response.status,statusText:response.statusText,ok:response.ok,headers:Object.fromEntries(response.headers.entries()),url:response.url},timestamp:Date.now(),sessionId:'debug-session',runId:'run3',hypothesisId:'A'})}).catch(()=>{});
-    // #endregion
-    
-    // Netlify Forms returns 200 on success, even if it's HTML
-    if (response.ok) {
-      // Check response - Netlify returns HTML with success message
-      const responseText = await response.text();
-      
-      // Netlify Forms success page contains these indicators
-      const isSuccess = responseText.includes('Thank you') || 
-                       responseText.includes('Gracias') ||
-                       responseText.includes('success') ||
-                       response.status === 200;
-      
-      if (isSuccess || response.status === 200) {
-        // Success
-        if (messageEl) {
-          messageEl.textContent = content.rsvp?.success?.[currentLang] || '¡Gracias! Hemos recibido tu confirmación.';
-          messageEl.className = 'form-message success';
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
         }
-        
-        // Reset form
-        form.reset();
-        handleAttendanceChange({ target: { value: 'no' } });
-        
-        // Clear all initialized flags
-        form.querySelectorAll('[data-initialized]').forEach(el => {
-          el.removeAttribute('data-initialized');
-        });
-        
-        // Scroll to message
-        messageEl?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-      } else {
-        throw new Error('Unexpected response format');
-      }
-    } else {
-      // Get error details
-      const responseText = await response.text().catch(() => '');
-      
-      // #region agent log
-      fetch('http://127.0.0.1:7242/ingest/c9243853-011a-4cad-bc57-1fbe71d16b45',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'app.js:482',message:'Response not OK - error details',data:{status:response.status,statusText:response.statusText,responseTextPreview:responseText.substring(0,500),responseTextLength:responseText.length},timestamp:Date.now(),sessionId:'debug-session',runId:'run3',hypothesisId:'A'})}).catch(()=>{});
-      // #endregion
-      
-      console.error('Form submission failed:', {
-        status: response.status,
-        statusText: response.statusText,
-        responsePreview: responseText.substring(0, 500)
       });
-      throw new Error(`Server error: ${response.status} ${response.statusText}`);
-    }
-  } catch (error) {
-    // #region agent log
-    fetch('http://127.0.0.1:7242/ingest/c9243853-011a-4cad-bc57-1fbe71d16b45',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'app.js:494',message:'Exception caught',data:{errorName:error.name,errorMessage:error.message,errorStack:error.stack,encodedData:encodedData},timestamp:Date.now(),sessionId:'debug-session',runId:'run3',hypothesisId:'D'})}).catch(()=>{});
-    // #endregion
-    
-    console.error('Form submission error:', error);
-    console.error('Form data that was sent:', encodedData);
-    
-    if (messageEl) {
-      const errorMsg = content.rsvp?.error?.[currentLang] || 'Hubo un error al enviar. Por favor, inténtalo de nuevo.';
-      messageEl.textContent = errorMsg + ' (Error: ' + error.message + ')';
-      messageEl.className = 'form-message error';
-    }
-  } finally {
-    // Re-enable submit button
-    if (submitBtn) {
-      submitBtn.disabled = false;
-      submitBtn.textContent = content.rsvp?.submit?.[currentLang] || 'Enviar confirmación';
-    }
-  }
+    },
+    { threshold: 0.12, rootMargin: '0px 0px -40px 0px' }
+  );
+
+  document.querySelectorAll('.reveal:not(.visible)').forEach(el => observer.observe(el));
 }
 
-function validateForm(form) {
-  let isValid = true;
-  
-  // Validate all required fields
-  const requiredFields = form.querySelectorAll('[required]');
-  requiredFields.forEach(field => {
-    if (!validateField({ target: field })) {
-      isValid = false;
-    }
-  });
-  
-  // Validate email if present
-  const emailField = document.getElementById('email');
-  if (emailField && emailField.value) {
-    if (!validateEmail({ target: emailField })) {
-      isValid = false;
-    }
-  }
-  
-  // Validate main course if attending
-  const attendanceYes = document.getElementById('attendance-yes');
-  if (attendanceYes && attendanceYes.checked) {
-    const mainCourse = document.getElementById('mainCourse');
-    if (mainCourse && !mainCourse.value) {
-      showFieldError(mainCourse, content.rsvp?.validation?.required?.[currentLang] || 'Este campo es obligatorio');
-      isValid = false;
-    }
-  }
-  
-  return isValid;
-}
+// ─── Start ────────────────────────────────────────
 
-function validateField(e) {
-  const field = e.target;
-  const errorEl = document.getElementById(`${field.id}-error`);
-  
-  if (field.hasAttribute('required') && !field.value.trim()) {
-    showFieldError(field, content.rsvp?.validation?.required?.[currentLang] || 'Este campo es obligatorio');
-    return false;
-  }
-  
-  clearFieldError({ target: field });
-  return true;
-}
-
-function validateEmail(e) {
-  const field = e.target;
-  const errorEl = document.getElementById(`${field.id}-error`);
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  
-  if (field.value && !emailRegex.test(field.value)) {
-    showFieldError(field, content.rsvp?.validation?.email?.[currentLang] || 'Por favor, introduce un email válido');
-    return false;
-  }
-  
-  clearFieldError({ target: field });
-  return true;
-}
-
-function showFieldError(field, message) {
-  const errorEl = document.getElementById(`${field.id}-error`);
-  if (errorEl) {
-    errorEl.textContent = message;
-  }
-  field.setAttribute('aria-invalid', 'true');
-}
-
-function clearFieldError(e) {
-  const field = e.target;
-  const errorEl = document.getElementById(`${field.id}-error`);
-  if (errorEl) {
-    errorEl.textContent = '';
-  }
-  field.removeAttribute('aria-invalid');
-}
+document.addEventListener('DOMContentLoaded', init);

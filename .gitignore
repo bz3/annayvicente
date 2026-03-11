@@ -16,5 +16,13 @@ Thumbs.db
 .env
 .env.local
 
+# Node
+node_modules/
+
+# Database (local data — do NOT commit real guest data)
+data/rsvp.db
+data/rsvp.db-shm
+data/rsvp.db-wal
+
 # Local Netlify folder
 .netlify
