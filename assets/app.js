@@ -69,17 +69,19 @@ function applyContent() {
     if (val !== el.dataset.i18nPh) el.placeholder = val;
   });
 
-  // Set form placeholders manually
+  // Update form placeholders (only if translation differs from key, preserving HTML fallbacks)
   const phs = [
-    ['firstName',  'rsvp.firstName'],
-    ['lastName',   'rsvp.lastName'],
-    ['email',      'rsvp.email'],
+    ['firstName',  'rsvp.firstNamePh'],
+    ['lastName',   'rsvp.lastNamePh'],
+    ['email',      'rsvp.emailPh'],
     ['allergies',  'rsvp.allergiesPlaceholder'],
     ['comments',   'rsvp.commentsPlaceholder'],
   ];
   phs.forEach(([id, key]) => {
-    const el = document.getElementById(id);
-    if (el) el.placeholder = t(key);
+    const el  = document.getElementById(id);
+    if (!el) return;
+    const val = t(key);
+    if (val && val !== key) el.placeholder = val; // don't set if key not found
   });
 
   // Page title
@@ -213,12 +215,26 @@ function setupVenueMap() {
 
   if (!mapEl) return;
 
-  if (mapUrl && mapUrl !== 'null' && mapUrl !== null) {
-    // Embed iframe if it's an embed URL, else show link
-    if (mapUrl.includes('maps/embed') || mapUrl.includes('embed?')) {
-      mapEl.innerHTML = `<iframe src="${mapUrl}" allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>`;
-    }
-    if (mapBtn) mapBtn.href = mapUrl.replace('/embed', '').replace('output=embed&', '');
+  const hasMap = mapUrl && mapUrl !== 'null' && mapUrl !== null;
+
+  if (!hasMap) {
+    // No map URL — hide the "Ver en Google Maps" button
+    if (mapBtn) mapBtn.hidden = true;
+    return;
+  }
+
+  // Embed iframe if it's an embed URL
+  if (mapUrl.includes('maps/embed') || mapUrl.includes('embed?')) {
+    mapEl.innerHTML = `<iframe src="${mapUrl}" allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Mapa de la finca"></iframe>`;
+  }
+
+  // Set button href to the non-embed URL
+  if (mapBtn) {
+    mapBtn.hidden = false;
+    mapBtn.href   = mapUrl
+      .replace('/embed', '/place')
+      .replace('output=embed&', '')
+      .replace('?output=embed', '');
   }
 }
 

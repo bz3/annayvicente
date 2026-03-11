@@ -3,6 +3,9 @@
    Design: Ivory & Gold Luxury
    ═══════════════════════════════════════════════════ */
 
+/* ─── Critical: ensure [hidden] always hides ─────── */
+[hidden] { display: none !important; }
+
 /* ─── Custom properties ──────────────────────────── */
 :root {
   /* Palette */
@@ -691,20 +694,20 @@ address { font-style: normal; }
   min-height: 1em;
 }
 
-/* Attending conditional fields */
+/* Attending conditional fields — max-height animation */
 .attending-fields {
-  display: grid;
-  grid-template-rows: 0fr;
-  transition: grid-template-rows .4s var(--ease-out);
+  overflow: hidden;
+  max-height: 0;
+  transition: max-height .45s var(--ease-out);
 }
-.attending-fields > * { overflow: hidden; }
-.attending-fields.open { grid-template-rows: 1fr; }
-/* Inner wrapper trick */
+.attending-fields.open {
+  max-height: 600px; /* Generous ceiling so animation feels snappy */
+}
 .attending-fields__inner {
   display: flex;
   flex-direction: column;
   gap: 1.75rem;
-  padding-top: .5rem;
+  padding-top: .75rem;
 }
 
 /* Honeypot */
