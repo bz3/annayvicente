@@ -360,6 +360,21 @@
       "en": "Allergies or intolerances",
       "hu": "Allergiák vagy intoleranciák"
     },
+    "firstNamePh": {
+      "es": "Tu nombre",
+      "en": "Your first name",
+      "hu": "Keresztneved"
+    },
+    "lastNamePh": {
+      "es": "Tus apellidos",
+      "en": "Your last name",
+      "hu": "Vezetékneved"
+    },
+    "emailPh": {
+      "es": "tu@email.com",
+      "en": "you@email.com",
+      "hu": "te@email.com"
+    },
     "allergiesPlaceholder": {
       "es": "Ej: sin gluten, lactosa, frutos secos…",
       "en": "E.g.: gluten-free, lactose, nuts…",
