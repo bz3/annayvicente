@@ -1,14 +1,59 @@
-# Netlify configuration
+# Netlify configuration — Anna & Vicente Wedding
 
 [build]
-  # No build step needed for static site
   publish = "."
+  command = "npm install --production"
 
-# Netlify Forms processes POST requests to / automatically
-# IMPORTANT: We removed the catch-all redirect because it was interfering with Forms
-# For SPA routing, we'll handle it client-side only
-# If you need server-side routing, add specific redirects here (not catch-all)
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
 
 [build.environment]
-  # Set Node version if needed (optional)
-  NODE_VERSION = "18"
+  NODE_VERSION = "20"
+
+# ─── API → Netlify Functions redirects ───────────────────────────────────────
+# Map /api/* paths used by the frontend to their corresponding functions.
+# More specific paths must come first.
+
+[[redirects]]
+  from   = "/api/admin/export"
+  to     = "/.netlify/functions/admin-export"
+  status = 200
+  force  = true
+
+[[redirects]]
+  from   = "/api/admin/login"
+  to     = "/.netlify/functions/admin-login"
+  status = 200
+  force  = true
+
+[[redirects]]
+  from   = "/api/admin/stats"
+  to     = "/.netlify/functions/admin-stats"
+  status = 200
+  force  = true
+
+# Handles both GET /api/admin/rsvps and DELETE /api/admin/rsvps/:id
+[[redirects]]
+  from   = "/api/admin/rsvps/*"
+  to     = "/.netlify/functions/admin-rsvps"
+  status = 200
+  force  = true
+
+[[redirects]]
+  from   = "/api/admin/rsvps"
+  to     = "/.netlify/functions/admin-rsvps"
+  status = 200
+  force  = true
+
+[[redirects]]
+  from   = "/api/rsvp"
+  to     = "/.netlify/functions/rsvp"
+  status = 200
+  force  = true
+
+# Admin panel route
+[[redirects]]
+  from   = "/admin"
+  to     = "/admin.html"
+  status = 200
